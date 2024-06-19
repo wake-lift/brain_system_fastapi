@@ -9,6 +9,7 @@ from app.api.users import router as users_router
 from app.core.config import settings
 from app.pages.common_pages import router as common_pages_router
 from app.pages.brain_system import router as brain_system_router
+from app.pages.error_handlers import custom_error_handlers
 from app.pages.questions import router as pages_questions_router
 
 app_api = FastAPI(
@@ -19,6 +20,7 @@ app_api = FastAPI(
 app_api.include_router(api_questions_router)
 app_api.include_router(users_router)
 
+
 app_pages = FastAPI(
     title=settings.app_pages_title,
     description=settings.app_pages_description,
@@ -26,6 +28,9 @@ app_pages = FastAPI(
         Middleware(SessionMiddleware, secret_key='***REPLACEME1***'),
         Middleware(CSRFProtectMiddleware, csrf_secret='***REPLACEME2***'),
     ],
+    exception_handlers=custom_error_handlers,
+    docs_url=None,
+    redoc_url=None,
 )
 
 app_pages.mount(
