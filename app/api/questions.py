@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.utils import check_superuser_or_user_who_added
 from app.core.db import get_async_session
 from app.core.users import current_superuser, current_user
-from app.crud.questions import (
+from app.crud.questions_api import (
     create_question, edit_question,
     get_initial_query,
     get_question_or_404,

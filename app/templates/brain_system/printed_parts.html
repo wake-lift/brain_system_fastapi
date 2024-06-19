@@ -1,0 +1,354 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Печатные детали
+{% endblock %}
+{% block manual_pages %}
+<div  class="ms-4 adaptive-fs">
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Печатные детали</h2>
+  <br>
+  <p>
+    Иметь доступ к 3D-принтеру вовсе не обязательно.<br>
+    В продаже имеется большое количество коробок и корпусов, которые можно успешно приспособить под ваши нужды, например:
+    <li><a href="https://www.chipdip.ru/catalog-show/plastic-cases" class="link-secondary adaptive-fs-small" target="_blank">ЧИПиДИП</a></li>
+    <li><a href="https://aliexpress.ru/wholesale?SearchText=diy+case&g=y&page=1&searchInfo=ti+arsFsz6oT9FkaeEJN2IKfs5INPZqjZpQS0uXPdDo%3D" class="link-secondary adaptive-fs-small" target="_blank">Aliexpress</a></li>
+  </p>
+  <p>
+    Для печати деталей подойдёт 3D-принтер с областью печати от 190×190×210 мм (д.-ш.-в.).<br>
+    Желательно применять пластики с низкой усадкой и хорошей спекаемостью (PLA, PETG и т.п.).
+  </p>
+  <p>
+    Пластик можно <a href="https://rec3d.ru/rec-wiki/sushka-plastika/" class="link-secondary" target="_blank">просушить</a>, это улучшит качество печати.
+  </p>
+  <p>
+    Модели оптимизированы под печать с шириной слоя 0.4 мм и толщиной слоя 0.2 мм.<br>
+    Для лучшей межслойной адгезии рекомендуется уменьшить обдув модели и прибавить температуру.<br>
+    Поскольку модели крупногабаритные, пластик успевает охлаждаться и без сильного обдува.
+  </p>
+  <p>
+    Поддержки не требуются. Чтобы избавиться от поддержек, в нескольких моделях отверстия под винты перекрыты мембранами, которые печатаются мостами.<br>
+    После окончания печати мембраны высверливаются сверлом 3 мм.
+  </p>
+  <br>
+  <h4 class="adaptive-fs-big" style="text-align: center;">Базовая станция</h4>
+  <p>
+    Барьер сверху крышки предназначен для того, чтобы скрыть кнопки ведущего (чтобы игроки не следили за движениями руки ведущего).
+  </p>
+  <p>
+    На дне корпуса предусмотрены отверстие под приборные ножки, печатную плату, блок питания AC/DC.
+  </p>
+  <div class="accordion" id="BaseStation3DAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#BaseStation3D-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Базовая станция: 3d-модели
+        </button>
+      </h2>
+      <div id="BaseStation3D-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div id="carouselBaseStation_3d" class="carousel carousel-dark slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_assembly.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - сборка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_case.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - корпус</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_cap.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - крышка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_barrier.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - барьер</h5>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion" id="BaseStationOrientationAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#BaseStationOrientation-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Базовая станция: ориентация для печати
+        </button>
+      </h2>
+      <div id="BaseStationOrientation-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div id="carouselBaseStation_Orientation" class="carousel slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselBaseStation_Orientation" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_Orientation" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_Orientation" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_case_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - корпус</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_cap_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - крышка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/base_station_barrier_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Базовая станция - барьер</h5>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselBaseStation_Orientation" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselBaseStation_Orientation" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+
+    <br>
+    Скачать:<br>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/base_station_case.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Корпус в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/base_station_cap.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Крышка в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/base_station_barrier.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Барьер в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/base_station.FCStd') }}" download class="link-secondary adaptive-fs-small" target="_blank">Чертеж в формате FreeCAD</a></li>
+  </p>
+  <br>
+  <h4 class="adaptive-fs-big" style="text-align: center;">Блок светодиодов</h4>
+  <div class="accordion" id="LED_block3DAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#LED_block3D-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Блок светодиодов: 3d-модели
+        </button>
+      </h2>
+      <div id="LED_block3D-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div id="carouselLED_block_3d" class="carousel carousel-dark slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_assembly.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - сборка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_front.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - передняя часть</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_back.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - задняя часть</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - опора</h5>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselLED_block_3d" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion" id="LED_blockOrientationAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#LED_blockOrientation-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Блок светодиодов: ориентация для печати
+        </button>
+      </h2>
+      <div id="LED_blockOrientation-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div id="carouselLED_block_Orientation" class="carousel slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_front_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - передняя часть</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_back_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - задняя часть</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - опора</h5>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+
+    <br>
+    Скачать:<br>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_front.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Передняя часть в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_back.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Задняя часть в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Опора в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED case.FCStd') }}" download class="link-secondary adaptive-fs-small" target="_blank">Чертеж блока светодиодов в формате FreeCAD</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support.FCStd') }}" download class="link-secondary adaptive-fs-small" target="_blank">Чертеж опоры в формате FreeCAD</a></li>
+  </p>
+  <br>
+  <h4 class="adaptive-fs-big" style="text-align: center;">Кнопки игроков</h4>
+  <p>
+    Предусмотрено два варианта крышки: под аркадные кнопки (отверстие 30 мм) и под обычные (отверстие 12 мм).
+  </p>
+  <div class="accordion" id="PlayerButton3DAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#PlayerButton3D-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Кнопка игрока: 3d-модели
+        </button>
+      </h2>
+      <div id="PlayerButton3D-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <div id="PlayerButton_3d" class="carousel carousel-dark slide">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselPlayerButton_3d" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselPlayerButton_3d" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselPlayerButton_3d" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselPlayerButton_3d" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/player_button_assembly.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Кнопка игрока - сборка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/player_button_base.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Кнопка игрока - корпус</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/player_button_cap_d12.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Кнопка игрока - крышка d12</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/player_button_cap_d30.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Кнопка игрока - крышка d30</h5>
+                </div>
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#PlayerButton_3d" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#PlayerButton_3d" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion" id="PlayerButtonOrientationAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#PlayerButtonOrientation-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Кнопка игрока: ориентация для печати
+        </button>
+      </h2>
+      <div id="PlayerButtonOrientation-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <img src="{{ url_for('static', path='img/manual_printed_parts/player_button_print_orientation.png') }}" class="d-block w-100" alt="...">
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+
+    <br>
+    Скачать:<br>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/player_button_base.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Корпус в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/player_button_cap_d12.stl') }}" class="link-secondary adaptive-fs-small" target="_blank" download>Крышка d12 в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/player_button_cap_d30.stl') }}" class="link-secondary adaptive-fs-small" target="_blank" download>Крышка d30 в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/player_button.FCStd') }}" class="link-secondary adaptive-fs-small" target="_blank" download>Чертеж в формате FreeCAD</a></li>
+    <br>
+  </p>
+
+
+  
+</div>
+{% endblock %}

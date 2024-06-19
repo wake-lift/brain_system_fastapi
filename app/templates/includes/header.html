@@ -19,12 +19,12 @@
               Документация
             </button>
             <ul class="dropdown-menu adaptive-fs-small">
-              <li><a class="dropdown-item {% if request.path == url_for('operating') %} disabled {% endif %}" href="{{ url_for('operating') }}">Описание работы</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('circuit') %} disabled {% endif %}" href="{{ url_for('circuit') }}">Электрическая схема</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('pcb') %} disabled {% endif %}" href="{{ url_for('pcb') }}">Печатная плата</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('printed') %} disabled {% endif %}" href="{{ url_for('printed') }}">Печатные детали</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('bought') %} disabled {% endif %}" href="{{ url_for('bought') }}">Покупные изделия</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('firmware') %} disabled {% endif %}" href="{{ url_for('firmware') }}">Программное обеспечение</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('operating') %} disabled {% endif %}" href="{{ url_for('operating') }}">Описание работы</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('circuit') %} disabled {% endif %}" href="{{ url_for('circuit') }}">Электрическая схема</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('pcb') %} disabled {% endif %}" href="{{ url_for('pcb') }}">Печатная плата</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('printed') %} disabled {% endif %}" href="{{ url_for('printed') }}">Печатные детали</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('bought') %} disabled {% endif %}" href="{{ url_for('bought') }}">Покупные изделия</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('firmware') %} disabled {% endif %}" href="{{ url_for('firmware') }}">Программное обеспечение</a></li>
             </ul>
           </div>
 
@@ -33,10 +33,10 @@
               База вопросов
             </button>
             <ul class="dropdown-menu adaptive-fs-small">
-              <li><a class="dropdown-item {% if request.path == url_for('random_questions') %} disabled {% endif %}" href="{{ url_for('random_questions') }}">Случайные вопросы из Базы</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('random_package') %} disabled {% endif %}" href="{{ url_for('random_package') }}" href="#">Случайный пакет вопросов</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('tg_bot') %} disabled {% endif %}" href="{{ url_for('tg_bot') }}">Telegram-бот</a></li>
-              <li><a class="dropdown-item {% if request.path == url_for('api_info') %} disabled {% endif %}" href="{{ url_for('api_info') }}">BrainAPI</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('random_questions') %} disabled {% endif %}" href="{{ url_for('random_questions') }}">Случайные вопросы из Базы</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('random_package') %} disabled {% endif %}" href="{{ url_for('random_package') }}" href="#">Случайный пакет вопросов</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('tg_bot') %} disabled {% endif %}" href="{{ url_for('tg_bot') }}">Telegram-бот</a></li>
+              <li><a class="dropdown-item {% if request.url == url_for('api_info') %} disabled {% endif %}" href="{{ url_for('api_info') }}">BrainAPI</a></li>
             </ul>
         </ul>
       </div>

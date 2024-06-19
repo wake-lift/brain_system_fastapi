@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}
+{% block manual_title %}{% endblock manual_title %}
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row justify-content-center">
+  <div class="col-xxl-3 border-end border-3 d-none d-xxl-block">
+    <div class="container sticky-top">
+      {#{% with view_name = url_for(request.path) %}#}
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('operating') %} disabled {% endif %}" href="{{ url_for('operating') }}">Описание работы</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('circuit') %} disabled {% endif %}" href="{{ url_for('circuit') }}">Электрическая схема</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('pcb') %} disabled {% endif %}" href="{{ url_for('pcb') }}">Печатная плата</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('printed') %} disabled {% endif %}" href="{{ url_for('printed') }}">Печатные детали</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('bought') %} disabled {% endif %}" href="{{ url_for('bought') }}">Покупные изделия</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-dark {% if request.url == url_for('firmware') %} disabled {% endif %}" href="{{ url_for('firmware') }}">Программное обеспечение</a>
+        </li>
+      </ul>
+      {#{% endwith %}#}
+    </div>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-12 col-xxl-9">
+    {% block manual_pages %}{% endblock manual_pages%}
+  </div>
+</div>
+</div>
+{% endblock %}

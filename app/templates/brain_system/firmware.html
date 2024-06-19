@@ -1,0 +1,39 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Программное обеспечение
+{% endblock %}
+{% block manual_pages %}
+<div class="ms-4 adaptive-fs">
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Программное обеспечение</h2>
+  <p>
+    <br>
+    Скачать скетч:<br>
+    <li><a href="{{ url_for('static', path='files/manual_firmware/BrainSystem.zip') }}" class="link-secondary adaptive-fs-small" download>zip-архив</a></li>
+    <li><a href="https://github.com/wake-lift/brain_system" class="link-secondary adaptive-fs-small" target="_blank">GitHub</a></li>
+    <br>
+  </p>
+  <p>
+    Для обработки кнопок ведущего и игроков используются <a href="https://deepbluembedded.com/arduino-pcint-pin-change-interrupts/" class="link-secondary" target="_blank">Pin Change Interrupts</a>.<br>
+    С этим связан выбор пинов на плате Arduino и соответствующая разводка дорожек на печатной плате.
+  </p>
+  <p>
+    Инструкцию по заливке скетча в Arduino 
+    <a href="https://support.arduino.cc/hc/en-us/articles/4733418441116-Upload-a-sketch-in-Arduino-IDE" class="link-secondary" target="_blank">несложно</a> 
+    <a href="https://www.electronicsforu.com/technology-trends/learn-electronics/how-to-upload-source-code-on-arduino-board" class="link-secondary" target="_blank">найти</a> 
+    <a href="https://wiki.iarduino.ru/page/ustanovka-nastroyka-programmnoy-obolochki-arduino-ide-dlya-windows/" class="link-secondary" target="_blank">в сети</a>.
+    <br><br>
+    Код скетча подробно прокомментирован. Можно изменить многие параметры, например:
+    <ul>
+      <li>
+        Время, отведенное командам на ответ
+      </li>
+      <li>
+        Частоту мерцания светодиодов
+      </li>
+      <li>
+        Длительность и тональность звуковых сигналов
+      </li>
+    </ul>
+  </p>
+</div>
+{% endblock %}

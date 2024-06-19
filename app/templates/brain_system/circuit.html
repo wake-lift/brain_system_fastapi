@@ -1,0 +1,62 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Электрическая схема
+{% endblock %}
+{% block manual_pages %}
+
+<div  class="ms-4 adaptive-fs">
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Электрическая схема</h2>
+  <br>
+
+
+  <div class="text-center">
+    <img class="border-3 rounded w-75" data-bs-toggle="modal" data-bs-target="#exampleModal" src="{{ url_for('static', path='img/manual_circuit/bs_electrical_diagram.png') }}">
+  </div>
+  <br>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <img class="border-3 rounded img-fluid" src="{{ url_for('static', path='img/manual_circuit/bs_electrical_diagram.png') }}">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p>
+    Плата имеет два ввода питания: DC 12V (питание платы Arduino и светодиодов на главном блоке) и DC 24V (питание блока светодиодов). Сетевое напряжение преобразуется в AC-DC-блоке питания, затем напряжение 24V снижется до 12V на DC-DC-преобразователе.
+  </p>
+  <p>
+    Для подачи напряжения на блок светодиодов используются реле на основе MOSFET-транзисторов.
+  </p>
+  <div class="accordion" id="ImgAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#MOSFET-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Схема подключения нагрузки через MOSFET
+        </button>
+      </h2>
+      <div id="MOSFET-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ url_for('static', path='img/manual_circuit/load_connection_via_MOSFET.png') }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <br>
+  <p>
+    Для устранения «дребезга» контактов применена схема на основе шестиканального <a href="https://vpayaem.ru/inf_drebezg.html" class="link-secondary" target="_blank">триггера Шмитта</a>.
+  </p>
+  <p>
+    Электрическая схема брейн-системы:<br>
+    <a href="{{ url_for('static', path='files/manual_circuit/bs_electrical_diagram.pdf') }}" class="link-secondary" download>скачать в формате pdf</a><br>
+    <a href="{{ url_for('static', path='files/manual_circuit/bs_electrical_diagram.vsd') }}" class="link-secondary" download>скачать в формате vsd</a><br>
+  </p>
+</div>
+</div>
+{% endblock %}

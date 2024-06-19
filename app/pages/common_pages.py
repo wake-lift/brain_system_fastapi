@@ -1,8 +1,15 @@
 from typing import Annotated
-from fastapi import APIRouter, Form, Request
+
+from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
+from sqlalchemy.ext.asyncio import AsyncSession
+from starlette_wtf import csrf_protect
 
 from app.core.config import templates
+from app.core.db import get_async_session
+from app.crud.feedback import add_feedback_to_db
+from app.pages.forms import FeedbackForm
+
 
 router = APIRouter(
     prefix='',
@@ -24,10 +31,21 @@ async def legal(request: Request):
     )
 
 
+@csrf_protect
 @router.get('/feedback/', response_class=HTMLResponse)
 @router.post('/feedback/', response_class=HTMLResponse)
 async def feedback(
     request: Request,
+    session: AsyncSession = Depends(get_async_session),
 ):
-    print(request.method)
-    return request.method
+    form = await FeedbackForm.from_formdata(request)
+    context = {'form': form}
+    if request.method == 'POST':
+        if await form.validate_on_submit():
+            await add_feedback_to_db(form, session)
+            context['form_saved'] = True
+    else:
+        context['form_saved'] = False
+    return templates.TemplateResponse(
+        request=request, name='/common_pages/feedback.html', context=context
+    )

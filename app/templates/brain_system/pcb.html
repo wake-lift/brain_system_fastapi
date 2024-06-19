@@ -1,0 +1,59 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Печатная плата
+{% endblock %}
+{% block manual_pages %}
+<div>
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Печатная плата</h2>
+  <br>
+  <p class="ms-4 adaptive-fs">
+    Печатная плата изготавливается в домашних условиях методами <a href="https://cxem.net/master/45.php" class="link-secondary" target="_blank">ЛУТ</a> или <a href="https://cxem.net/master/47.php" class="link-secondary" target="_blank">фоторезиста</a>.<br>
+    Кроме того, существуют сервисы, изготавливающие печатные платы по документации заказчика.<br>
+  </p>
+  <div class="accordion" id="ImgAccordion">
+    <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+          Печатная плата - изображение
+        </button>
+      </h2>
+      <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
+        <div class="accordion-body">
+          <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ url_for('static', path='img/manual_pcb/bs_pcb.jpg') }}">
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="ms-4 adaptive-fs-small">
+    <br>
+    <div class="ms-4 adaptive-fs-small">
+      Схемы печатной платы:<br>
+      <li><a href="{{ url_for('static', path='files/manual_pcb/bs_pcb_sprint_layout.lay6') }}" download class="link-secondary" target="_blank">скачать в формате sprint layout</a></li>
+      <li><a href="{{ url_for('static', path='files/manual_pcb/bs_pcb_gerber.zip') }}" download class="link-secondary" target="_blank">скачать в формате gerber</a></li>
+    </div>
+  </p>
+  <div class="ms-4 adaptive-fs-small">
+    Готовое изображение для печати на принтере:<br>
+    <li><a href="{{ url_for('static', path='files/manual_pcb/pcb_for_print.pdf') }}" download class="link-secondary" target="_blank">нормальное</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_pcb/pcb_for_print_mirrored.pdf') }}" download class="link-secondary" target="_blank">зеркальное</a></li>
+  </div>
+  <br>
+  <p class="ms-4 adaptive-fs fst-italic">
+    Рекомендуется после печати готового шаблона проверить линейкой основные размеры (например, расстояния между крепежными отверстиями) и при необходимости - отмасштабировать изображение.
+  </p>
+  <p class="ms-4 adaptive-fs">
+    В схеме применены несколько перемычек. Для перемычек используется любой провод в изоляции.
+  </p>
+  <p class="ms-4 adaptive-fs">
+    Вывод кабеля от USB-разъема платы Arduino наружу не предусмотрен. Для перепрошивки платы необходимо вскрывать главный блок.
+  </p>
+  <p class="ms-4 adaptive-fs">
+    Для сверления отверстий (кроме крепежных) использовать сверла 0.8-1.0 мм.<br>
+    Удобно, если есть настольный сверлильный станок (или что-то наподобие <a href="https://aliexpress.ru/item/33004228130.html" class="link-secondary" target="_blank">этого</a>), но можно сверлить и обычным шуруповертом.<br>
+    Если сверлить шуруповертом — сверла необходимо брать с запасом, так как они очень легко ломаются.
+  </p>
+  <p class="ms-4 adaptive-fs">
+    Мелкие разъемы лучше заказывать с уже обжатыми проводами. Если такой возможности нет — для обжима проводов в разъемах используется специальный кримпер (например, <a href="https://aliexpress.ru/item/32856858580.html" class="link-secondary" target="_blank">SN-2549R</a>), хотя можно без особых трудностей это делать и вручную.
+  </p>
+</div>
+{% endblock %}

@@ -11,22 +11,26 @@
   <div class="container" style="width: 40rem;">
     <h3 class="adaptive-fs-title" style="text-align: center;">Форма обратной связи</h3><br>
     <form method="POST" novalidate class="form adaptive-fs">
-      {#
+      {{ form.csrf_token }}
       {{ form.name(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.name.label.text, rows="1", cols="1") }}
+      <p>
+        {% if form.name.errors %}
+          {% for error in form.name.errors %}<span style="color: red" class="adaptive-fs-small">{{ error }}</span>{% endfor %}
+        {% endif %}
+      </p>
       {{ form.email(class="form-control py-3 mb-3 adaptive-fs", placeholder=form.email.label.text, rows="1", cols="10") }}
+      <p>
+        {% if form.email.errors %}
+          {% for error in form.email.errors %}<span style="color: red" class="adaptive-fs-small">{{ error }}</span>{% endfor %}
+        {% endif %}
+      </p>
       {{ form.feedback_text(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.feedback_text.label.text, rows="10", cols="1")}}
-      <br><br>
-      {{ form.submit(class="btn btn-outline-secondary adaptive-fs-big") }}
-      #}
-
-
-      <label for="name">First name:</label><br>
-      <input type="text" id="name" name="name"><br>
-      <label for="email">Last name:</label><br>
-      <input type="text" id="email" name="email">
-      <label for="feedback_text">Last name:</label><br>
-      <input type="text" id="feedback_text" name="feedback_text">
-      <input type="submit" value="Submit">
+      <p class="text-danger">
+        {% if form.feedback_text.errors %}
+          {% for error in form.feedback_text.errors %}<span style="color: red" class="adaptive-fs-small">{{ error }}</span>{% endfor %}
+        {% endif %}
+        <br><br>
+        {{ form.submit(class="btn btn-outline-secondary adaptive-fs-big") }}
     </form>
   </div>
 </div>

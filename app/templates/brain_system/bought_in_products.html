@@ -1,0 +1,48 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Покупные изделия
+{% endblock %}
+
+{% block manual_pages %}
+<div class="ms-4 adaptive-fs">
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Покупные изделия</h2>
+  <br>
+  <p>В приведенной таблице представлены покупные изделия, необходимые для сборки брейн-системы.</p>
+  <p>Ссылки на детали в интернет-магазинах не являются референтными и представлены для дополнительной информации о характеристиках и внешнем виде деталей.</p>
+  <p>Мелочь (метизы, электронные компоненты и т.п.) лучше брать с запасом.</p>
+  <p>
+    <form action="{{ url_for('export_model_to_ods') }}" target="_blank">
+      <button type="submit" class="btn btn-outline-secondary adaptive-fs-small">Выгрузить данные таблицы в формате ods</button>
+    </form>
+  </p>
+  <table style="font-size: 14px;" class="table table table-bordered table-striped-columns table-hover">
+    <thead class="align-middle text-center">
+      <tr>
+        <th scope="col">Название</th>
+        <th scope="col">Входит в состав</th>
+        <th scope="col">Кол-во</th>
+        <th scope="col">Тип</th>
+        <th scope="col">Ссылка</th>
+        <th scope="col">Комментарий</th>
+      </tr>
+    </thead>
+    <tbody class="table-group-divider">
+      {% for product in product_list %}
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.unit.name }}</td>
+        <td>{{ product.quantity }}</td>
+        <td>{{ product.product_type }}</td>
+        <td>
+          {% for link in product.links_for_product %}
+            <a href="{{ link.link }}" class="link-secondary" target="_blank" download>{{ link.link_short_name }}</a><br>
+          {% endfor %}
+        </td>
+        <td>{{ product.comment }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+{% endblock %}

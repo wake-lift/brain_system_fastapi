@@ -1,0 +1,168 @@
+{% extends "brain_system/manual.html" %}
+{% block manual_title %}
+  Принцип работы
+{% endblock %}
+{% block manual_pages %}
+<div>
+  <h2 class="ms-4 adaptive-fs-title" style="text-align: center;">Работа брейн-системы</h2>
+  <br>
+  <div class="d-flex justify-content-center">
+    <video class="w-100" controls >
+      <source src="{{ url_for('static', path='video/bs_demo.mp4') }}" type="video/mp4">
+    </video>
+  </div>
+  <div class="ms-4 adaptive-fs"> 
+    <br>
+    <p>Брейн-система состоит из:</p>
+    <ul class="ms-4 adaptive-fs-small">
+      <li>базовой станции</li>
+      <li>блока светодиодов</li>
+      <li>4-х кнопок игроков</li>
+    </ul>
+    <p>На базовой станции расположены:</p>
+    <ul class="ms-4 adaptive-fs-small">
+      <li>выключатель питания 220В</li>
+      <li>тумблер выбора режима игры (брейн-ринг — ЧГК — эрудит-квартет)</li>
+      <li>кнопка подтверждения выбора режима игры</li>
+      <li>две кнопки ведущего («SET» и «RESET»)</li>
+      <li>зуммер для подачи звуковых сигналов</li>
+    </ul>
+    <div class="accordion text-center" id="ImgAccordion">
+      <div class="accordion-item w-100">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+            Базовая станция - вид спереди
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ url_for('static', path='img/manual_operation_principle/base_station_front.jpg') }}">
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item w-100">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+            Базовая станция - вид сзади
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ url_for('static', path='img/manual_operation_principle/base_station_back.jpg') }}">
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item w-100">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+            Базовая станция - вид сбоку
+          </button>
+        </h2>
+        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+          <div class="accordion-body">
+            <img class="border-3 rounded img-fluid img-thumbnail mb-2 mx-auto d-block" src="{{ url_for('static', path='img/manual_operation_principle/base_station_side.jpg') }}">
+          </div>
+        </div>
+      </div>
+    </div>
+    <p>
+      <br>
+      К базовой станции подключаются:
+      <ul class="ms-4 adaptive-fs-small">
+        <li>Кнопки игроков с кнопками. Максимальное количество команд — 4 (красные, синие, зеленые, жёлтые)</li>
+        <li>Блок светодиодов. На блоке в зависимости от действий ведущего и команд загораются светодиоды 5-ти цветов (белый, красный, синий, зелёный, жёлтый). Для удобства ведущего (блок светодиодов обычно повернут к игрокам, и ведущий не видит его светодиоды) светодиоды продублированы на базовой станции.</li>
+      </ul>
+    </p>
+    <p>
+      Чтобы выбрать один из трёх режимов игры, ведущий переводит тумблер в нужное положение и подтверждает выбор нажатием кнопки «SET MODE»
+    </p>
+    <div class="accordion" id="ModesAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#ModesAccordion-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+            Режим игры «Брейн-ринг»
+          </button>
+        </h2>
+        <div id="ModesAccordion-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
+          <div class="accordion-body">
+            <p>
+              Для игры в «брейн-ринг» необходим ведущий и от 2-х до 4-х команд.
+            </p>
+            <p>
+              Ведущий зачитывает вопрос и кнопкой «SET» запускает таймер. Выдаётся звуковой сигнал и зажигается белый светодиод.
+            </p>
+            <p>
+              Если команда хочет дать ответ, она нажимает на свою кнопку.
+              При этом белый светодиод гаснет, загорается светодиод цвета команды, выдаётся звуковой сигнал. Кнопки других команд блокируются.
+            </p>
+            <p>
+              Если команда дала правильный ответ, ведущий сбрасывает раунд двумя нажатиями кнопки «RESET» и переходит к следующему вопросу.
+            </p>
+            <p>Если команда дала неправильный ответ, ведущий гасит светодиоды нажатием кнопки «RESET», после чего возобновляет отсчёт времени кнопкой «SET».
+              При этом кнопка команды, давшей неправильный ответ, блокируется до конца раунда. Таймер настроен на 20 секунд.
+              За 5 секунд до конца времени выдаются короткие ежесекундные сигналы.
+            </p>
+            <p>
+              После того, как время вышло, звучит звуковой сигнал и кнопки всех команд блокируются. Ведущий сбрасывает раунд кнопкой «RESET» и переходит к следующему вопросу.
+            </p>
+            <p>Если команда нажала кнопку до старта таймера, активируется фальстарт. 
+              Звучит длинный звуковой сигнал, светодиод цвета команды, допустившей фальстарт, начинает мигать. 
+              Кнопки других игроков блокируются (чтобы не могло быть нескольких фальстартов одновременно). 
+              Чтобы сбросить фальстарт, ведущий однократно нажимает «RESET», после чего может запустить отсчёт таймера. 
+              Кнопка команды, допустившей фальстарт, блокируется до конца раунда.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#ModesAccordion-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+            Режим игры «Что-Где-Когда»
+          </button>
+        </h2>
+        <div id="ModesAccordion-collapseTwo" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingTwo">
+          <div class="accordion-body">
+            <p>
+              Для проведения игр по «что-где-когда» есть более удобные средства, например сайт <a href="https://chgk-timer.ru/" class="link-secondary" target="_blank">«ЧГК-таймер»</a>. Брейн-система может оказаться полезной разве что в отсутствие интернета или компьютера. Логика игры такова:
+            </p>
+            <p>
+              Блок светодиодов для данного режима игры не нужен. Ведущий зачитывает вопрос и запускает время (по умолчанию 1 минута) кнопкой «SET». 
+              Кнопкой «RESET» можно сбросить таймер и перейти в исходное состояние.
+            </p>
+            <p>
+              За 10 секунд до конца времени звучит короткий звуковой сигнал. 
+              По истечении одной минуты звучит длинный звуковой сигнал.
+            </p>
+            <p>
+              Дополнительно реализована логика досрочного ответа. Если команда нажмёт кнопку в течение 1-й секунды после старта таймера — прозвучит сигнал и таймер остановится.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#ModesAccordion-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+            Режим игры «Эрудит-квартет»
+          </button>
+        </h2>
+        <div id="ModesAccordion-collapseThree" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingThree">
+          <div class="accordion-body">
+            <p>
+              Данный режим похож на режим «брейн-ринг», но в нем ведущий не запускает таймер.
+            </p>
+            <p>
+              Игроки могут нажать кнопку в любое время, даже не дождавшись окончания вопроса. При этом кнопки соперников блокируются.
+            </p>
+            <p>
+              Если был дан правильный ответ — ведущий кнопкой «RESET» сбрасывает раунд.<br>
+              Если был дан неправильный ответ — кнопка игрока, давшего неверный ответ, блокируется.<br>
+              После нажатия ведущим кнопки «RESET» остальные игроки могут продолжить игру.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

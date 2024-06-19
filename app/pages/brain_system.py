@@ -1,7 +1,12 @@
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import HTMLResponse, StreamingResponse
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import templates
+from app.core.db import get_async_session
+from app.crud.brain_system import get_bought_in_products
+from app.pages.utils import create_bom_file
+
 
 router = APIRouter(
     prefix='/brain_system',
@@ -11,34 +16,60 @@ router = APIRouter(
 
 @router.get('/operating-principle/', response_class=HTMLResponse)
 async def operating(request: Request):
-    return 'operating'
+    return templates.TemplateResponse(
+        request=request, name='/brain_system/operating_principle.html'
+    )
 
 
 @router.get('/electric-schematics/', response_class=HTMLResponse)
 async def circuit(request: Request):
-    return 'circuit'
+    return templates.TemplateResponse(
+        request=request, name='/brain_system/circuit.html'
+    )
 
 
 @router.get('/pcb/', response_class=HTMLResponse)
 async def pcb(request: Request):
-    return 'pcb'
+    return templates.TemplateResponse(
+        request=request, name='/brain_system/pcb.html'
+    )
 
 
 @router.get('/printed-parts/', response_class=HTMLResponse)
 async def printed(request: Request):
-    return 'printed'
+    return templates.TemplateResponse(
+        request=request, name='/brain_system/printed_parts.html'
+    )
 
 
 @router.get('/bought-in-products/', response_class=HTMLResponse)
-async def bought(request: Request):
-    return 'bought'
+async def bought(
+    request: Request,
+    session: AsyncSession = Depends(get_async_session)
+):
+    context = {'product_list': await get_bought_in_products(session)}
+    return templates.TemplateResponse(
+        request=request,
+        name='/brain_system/bought_in_products.html',
+        context=context
+    )
 
 
-@router.get('/export_model_to_ods/', response_class=HTMLResponse)
-async def export_model_to_ods(request: Request):
-    return 'export_model_to_ods'
+@router.get('/export_model_to_ods/')
+async def export_model_to_ods(
+    request: Request,
+    session: AsyncSession = Depends(get_async_session)
+):
+    output = await create_bom_file(session)
+    output.seek(0)
+    headers = {
+        'Content-Disposition': 'attachment; filename=brain_system_BOM.ods'
+    }
+    return StreamingResponse(output, headers=headers)
 
 
 @router.get('/firmware//', response_class=HTMLResponse)
 async def firmware(request: Request):
-    return 'firmware'
+    return templates.TemplateResponse(
+        request=request, name='/brain_system/firmware.html'
+    )
