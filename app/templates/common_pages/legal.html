@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}
+  Условия использования
+{% endblock title %}
+
+{% block content %}
+  <h3 class="text-center adaptive-fs-title">Условия использования</h3><br>
+  <div class="d-flex justify-content-center">
+    <img class="m-2" width="80" height="80" role="img" aria-label="" src="{{ url_for('static', path='img/common_pages/cc.svg') }}"></img>
+    <img class="m-2" width="80" height="80" role="img" aria-label="" src="{{ url_for('static', path='img/common_pages/by.svg') }}"></img>
+    <img class="m-2" width="80" height="80" role="img" aria-label="" src="{{ url_for('static', path='img/common_pages/sa.svg') }}"></img>
+  </div> 
+  <br><br>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 col-xl-8"> 
+        <p class="adaptive-fs">
+          Данный проект не является коммерческим и не использует в коммерческих целях интеллектуальную продукцию перечисленных далее авторов и сервисов.<br><br>
+          Материалы данного сайта, за исключением Базы вопросов, распространяются по лицензии<br><a href="https://creativecommons.org/licenses/by-sa/4.0/deed" class="link-primary" target="_blank">CC BY-SA 4.0 DEED</a>
+        </p>
+        <p class="adaptive-fs">
+          На материалы Базы вопросов распространяется лицензия <a href="https://db.chgk.info/copyright" class="link-dark" target="_blank">Интернет-клуба "Что? Где? Когда?"</a>
+        </p>
+        <br>
+        <p class="adaptive-fs-small">
+          Материалы сайта произведены с использованием следующих источников:
+        </p>
+        <ul class="adaptive-fs-small">
+          <li>База Вопросов Интернет-клуба "Что? Где? Когда?"<br><a href="https://db.chgk.info/" class="link-dark" target="_blank">db.chgk.info</a></li>
+          <br>
+          <li>
+            Проект брейн-системы, взятый за основу:<br>
+            <a href="https://github.com/OxanaKozlova/brain_system" class="link-dark" target="_blank">GitHub</a>, 
+            <a href="https://habr.com/ru/articles/394359/" class="link-dark" target="_blank">Habr</a>
+          </li>
+          <br>
+          <li>
+            <a href="https://freeicons.io/profile/75801" class="link-dark" target="_blank">Hilmy Abiyyu Asad</a>, 
+            <a href="https://creativecommons.org/licenses/by/3.0/" class="link-dark" target="_blank">CC BY 3.0 Deed Attribution 3.0 Unported</a>
+          </li>
+          <br>
+          <li>
+            <a href="https://www.svgbackgrounds.com" class="link-dark" target="_blank">SVGbackgrounds</a>, 
+            <a href="https://creativecommons.org/licenses/by/4.0/" class="link-dark" target="_blank">CC BY 4.0</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

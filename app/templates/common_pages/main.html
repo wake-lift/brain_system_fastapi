@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}
+  Брейн-система. Главная страница
+{% endblock %}
+{% block content %}
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-12 col-xl-8"> 
+        <p class="text-center adaptive-fs-title">Добро пожаловать на страницу<br>проекта "Brain System"</p>
+        <br>
+          <div id="carouselBaseStation_3d" class="carousel carousel-dark slide carousel-fade">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active border border-5">
+                <img src="{{ url_for('static', path='img/main_page/bs_main_page_1.jpg') }}" class="d-block w-100" alt="...">
+              </div>
+              <div class="carousel-item border border-5">
+                <img src="{{ url_for('static', path='img/main_page/bs_main_page_2.jpg') }}" class="d-block w-100" alt="...">
+              </div>
+              <div class="carousel-item border border-5">
+                <img src="{{ url_for('static', path='img/main_page/bs_main_page_3.jpg') }}" class="d-block w-100" alt="...">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselBaseStation_3d" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        <br><br>
+        <div class="container px-4 adaptive-fs-small">
+            Брейн-система предназначена для проведения различных интеллектуальных игр:
+            <ul class="container px-4">
+            <li>Брейн-ринг</li>
+            <li>Что-где-когда</li>
+            <li>Эрудит-квартет</li>
+            </ul>
+            <br>
+            Если вы:
+            <ul class="container px-4">
+            <li>имеете представление об Arduino</li>
+            <li>на базовом уровне разбираетесь в электронике</li>
+            <li>владеете технологией 3D-печати</li>
+            <li>умеете работать с паяльником...</li>
+            </ul>
+            ... тогда вы можете попробовать самостоятельно собрать брейн-систему по инструкциям с данного сайта или создать свой вариант на базе выложенных здесь исходных данных.
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

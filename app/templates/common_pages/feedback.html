@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Обратная связь
+{% endblock %}
+
+
+{% block content %}
+{% if not form_saved %}
+<div class="col d-flex justify-content-center">
+  <div class="container" style="width: 40rem;">
+    <h3 class="adaptive-fs-title" style="text-align: center;">Форма обратной связи</h3><br>
+    <form method="POST" novalidate class="form adaptive-fs">
+      {#
+      {{ form.name(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.name.label.text, rows="1", cols="1") }}
+      {{ form.email(class="form-control py-3 mb-3 adaptive-fs", placeholder=form.email.label.text, rows="1", cols="10") }}
+      {{ form.feedback_text(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.feedback_text.label.text, rows="10", cols="1")}}
+      <br><br>
+      {{ form.submit(class="btn btn-outline-secondary adaptive-fs-big") }}
+      #}
+
+
+      <label for="name">First name:</label><br>
+      <input type="text" id="name" name="name"><br>
+      <label for="email">Last name:</label><br>
+      <input type="text" id="email" name="email">
+      <label for="feedback_text">Last name:</label><br>
+      <input type="text" id="feedback_text" name="feedback_text">
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+{% else %}
+<div class="col d-flex justify-content-center">
+  <div class="container text-center" style="width: 40rem;">
+     <p class="text-center fs-3">Спасибо за обратную связь!</p><br>
+    <form action="{{ url_for('index') }}">
+      <button type="submit" class="btn btn-outline-secondary btn-lg">На главную</button>
+    </form>  
+  </div>
+</div>
+{% endif %}
+{% endblock %}

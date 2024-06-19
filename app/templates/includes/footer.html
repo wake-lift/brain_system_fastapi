@@ -1,0 +1,29 @@
+<div class="container border-top">
+
+  <div class="row align-items-center pt-2 pb-2">
+    
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-4 col-xxl-4 pb-2 order-xs-3 order-sm-3 order-md-3 order-lg-3 order-xl-1 order-xxl-1">
+      <div class="text-center text-body-secondary adaptive-fs">
+        © 2024 brainsystem.sytes.net
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-4 col-xxl-4 pb-2 order-xs-1 order-sm-1 order-md-1 order-lg-1 order-xl-2 order-xxl-2">
+      <div class="justify-content-center adaptive-fs">
+        <a href="#top" class="d-flex align-items-center justify-content-center link-body-emphasis text-decoration-none">
+          <img class="bi me-2" width="40" height="40" src="{{ url_for('static', path='img/up_arrow.png') }}"></img>
+        </a>
+      </div>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-4 col-xxl-4 pb-2 order-xs-2 order-sm-2 order-md-2 order-lg-2 order-xl-3 order-xxl-3">
+      <div class="justify-content-center adaptive-fs">
+        <ul class="nav justify-content-center">
+          <li class="nav-item"><a href="{{ url_for('legal') }}" class="{% if url_for('legal') == request.path %} disabled {% endif %} nav-link link-dark">Условия использования</a></li>
+          <li class="nav-item"><a href="{{ url_for('feedback') }}" class="{% if url_for('feedback') == request.path %} disabled {% endif %} nav-link link-dark">Обратная связь</a></li>
+        </ul>
+      </div>
+    </div>
+  
+  </div>
+</div>
