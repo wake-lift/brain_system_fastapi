@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import templates
@@ -14,35 +14,35 @@ router = APIRouter(
 )
 
 
-@router.get('/operating-principle/', response_class=HTMLResponse)
+@router.get('/operating-principle/')
 async def operating(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/operating_principle.html'
     )
 
 
-@router.get('/electric-schematics/', response_class=HTMLResponse)
+@router.get('/electric-schematics/')
 async def circuit(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/circuit.html'
     )
 
 
-@router.get('/pcb/', response_class=HTMLResponse)
+@router.get('/pcb/')
 async def pcb(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/pcb.html'
     )
 
 
-@router.get('/printed-parts/', response_class=HTMLResponse)
+@router.get('/printed-parts/')
 async def printed(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/printed_parts.html'
     )
 
 
-@router.get('/bought-in-products/', response_class=HTMLResponse)
+@router.get('/bought-in-products/')
 async def bought(
     request: Request,
     session: AsyncSession = Depends(get_async_session)
@@ -68,7 +68,7 @@ async def export_model_to_ods(
     return StreamingResponse(output, headers=headers)
 
 
-@router.get('/firmware//', response_class=HTMLResponse)
+@router.get('/firmware/')
 async def firmware(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/firmware.html'

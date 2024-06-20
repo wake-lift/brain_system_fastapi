@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+  Simple Brain Bot
+{% endblock %}
+
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-xl-7 col-xxl-6">
+      <div class="container">
+        <div class="container text-center">
+          <h2>
+            <a href="https://t.me/SimpleBrainBot" class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover adaptive-fs-title" target="_blank">@SimpleBrainBot</a>
+          </h2>
+          <br>
+          <br>
+          <a href="https://t.me/SimpleBrainBot" target="_blank"><img class="img-fluid w-75" alt="..." src="{{ url_for('static', path='img/tg_bot_page/brain_bot_qr-code.png') }}"></a>
+          <br>
+          <br>
+          <br>
+        </div>
+        <p class="text-center adaptive-fs">
+          SimpleBrainBot - это Telegram-бот, генерирующий в ответ на запрос пользователя
+          случайный вопрос из трех различных категорий:
+            <div class="text-center adaptive-fs">
+            <p>Что-Где-Когда<br>Брейн-ринг<br>Своя игра</p>
+            </div>
+        </p>
+        <br><br>
+      </div>
+    </div>
+  <div>
+{% endblock %}

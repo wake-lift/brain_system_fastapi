@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 import random
 from fastapi import Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
@@ -5,12 +6,53 @@ from pydantic import BaseModel
 from sqlalchemy import Select, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.constants import SET_FOR_RANDOMIZING
-from app.api.utils import get_max_question_type_quantity
+from app.core.constants import REFRESH_INTERVAL, SET_FOR_RANDOMIZING
 from app.core.db import get_async_session
 from app.models.questions import Question
 from app.models.users import User
 from app.schemas.questions import QuestionCreate
+
+max_sets: dict[str, int | None] = {
+    'Б': None,
+    'ДБ': None,
+    'И': None,
+    'Л': None,
+    'Ч': None,
+    'ЧБ': None,
+    'ЧД': None,
+    'Э': None,
+    'Я': None,
+    'total': None
+}
+
+LAST_REFRESH: datetime = datetime.now(timezone.utc)
+
+
+async def get_max_question_type_quantity(
+        session: AsyncSession
+) -> dict[str, int | None]:
+    """Пересчитывает количество вопросов в БД по категориям вопросов через
+    заданный в параметре REFRESH_INTERVAL интервал времени."""
+    global max_sets, LAST_REFRESH
+    if (
+        not all(max_sets.values())
+        or (datetime.now(timezone.utc) - LAST_REFRESH > REFRESH_INTERVAL)
+    ):
+        query = (
+            select(Question.question_type, func.count())
+            .select_from(Question)
+            .filter(Question.is_condemned == 0, Question.is_published == 1)
+            .group_by(Question.question_type)
+        )
+        qunatities = await session.execute(query)
+        for counted_question_type in qunatities.all():
+            max_sets[counted_question_type[0].name] = counted_question_type[1]
+        total_quantity = await session.execute(
+            select(func.count()).select_from(Question)
+        )
+        max_sets['total'] = total_quantity.scalars().first()
+        LAST_REFRESH = datetime.now(timezone.utc)
+    return max_sets
 
 
 async def get_initial_query(

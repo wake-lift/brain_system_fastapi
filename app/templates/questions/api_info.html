@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+  BrainAPI
+{% endblock title %}
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 col-xxl-10">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="adaptive-fs"> 
+            <h3 class="adaptive-fs-title" style="text-align: center;">BrainAPI</h3>
+            <br><br>
+            <p class="adaptive-fs-big">
+              BrainAPI - это API-сервис для взаимодествия с Базой вопроса для интеллектуальных игр
+            </p>
+
+            <p class="adaptive-fs-big">В API реализованы:</p>
+            <ul>
+              <li>Получение вопросов из базы данных;</li>
+              <li>Получение случайных вопросов из базы данных;</li>
+              <li>Получение случайных турнироных пакетов вопросов;</li>
+              <li>Поиск по тексту вопроса;</li>
+              <li>Фильтрация по категории вопроса;</li>
+              <li>Добавление вопросов;</li>
+              <li>Редактирование вопросов;</li>
+              <li>Удаление вопросов;</li>
+              <li>Регистрация пользователей;</li>
+              <li>Редактирование данных пользователей.</li>
+            </ul>
+            <br>
+            <p class="adaptive-fs">Формат передачи данных: JSON.</p>
+            <p class="adaptive-fs">Механизм аутентификации: JWT-токены.</p>
+            <br>
+            <p class="adaptive-fs-big">
+              Документация в формате Swagger доступна по адресу:
+            </p>
+            <p class="adaptive-fs-big">
+              <a href="https://brainapi.sytes.net/docs/" class="link-dark" target="_blank">https://brainapi.sytes.net/docs/</a>
+            </p>
+            <p class="adaptive-fs-big">
+              Документация в формате ReDoc доступна по адресу:
+            </p>
+            <p class="adaptive-fs-big">
+              <a href="https://brainapi.sytes.net/redoc/" class="link-dark" target="_blank">https://brainapi.sytes.net/redoc/</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

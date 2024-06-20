@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+from app.core.constants import MIN_QUESTION_LENGTH
 from app.models.questions import QuestionType
 
 
@@ -38,7 +39,7 @@ class QuestionCreate(BaseModel):
         ...,
         examples=[('Текст вопроса (не менее 30-ти символов). '
                    'Обязательное поле'),],
-        min_length=30
+        min_length=MIN_QUESTION_LENGTH
     )
     answer: str = Field(..., examples=['Ответ на вопрос. Обязательное поле',])
     pass_criteria: str | None = Field(
@@ -65,7 +66,7 @@ class QuestionUpdate(BaseModel):
     question: str | None = Field(
         None,
         examples=['Текст вопроса (не менее 30-ти символов) (опционально)',],
-        min_length=30
+        min_length=MIN_QUESTION_LENGTH
     )
     answer: str | None = Field(
         None,

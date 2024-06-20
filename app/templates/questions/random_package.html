@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}
+Случайный турнирный пакет из Базы
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
+      <h3 class="text-center adaptive-fs-title">Случайный турнирный пакет из Базы</h3><br>
+    </div>
+  </div>
+  <br>
+
+  <div class="row justify-content-center adaptive-fs-small">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
+      <form action="{{ url_for('random_package') }}" method="POST" class="form adaptive-fs">
+        {{ form.csrf_token }}
+        {{ form.question_type.label }}
+        {{ form.question_type(class="py-3 mb-1 adaptive-fs", placeholder=form.question_type.label.text) }}
+        <br>
+        <br>
+        {{ form.submit(class="btn btn-outline-secondary adaptive-fs-big") }}
+      </form>
+      <br><br>
+    </div>
+
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9 adaptive-fs">
+      {% if form_is_valid and request.method == 'POST' %}
+        <h4 class="text-center adaptive-fs-title">Вопросы из пакета "{{ random_package_name }}"</h4><br>
+        {% for obj in random_package %}
+          <div class="container border border-3">
+            <div class="card-body">
+              <p class="card-text fw-semibold">
+                {{ obj.question }}
+              </p> 
+            </div>
+            <p class="d-inline-flex gap-1">
+              <div class="text-center">
+                <button class="btn btn-outline-dark adaptive-fs-small" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ obj.id }}" aria-expanded="false" aria-controls="collapse{{ obj.id }}">
+                  Показать ответ
+                </button>
+              </div>
+            </p>
+            <div class="collapse" id="collapse{{ obj.id }}">
+              <br>
+              <p class="card-text fw-bold">
+                {{ obj.answer }}
+              </p>
+              <p class="card-text fst-italic">
+                {% if obj.comments != "None" %}<span class="text-decoration-underline">Комментарий:</span> {{ obj.comments }}<br>{% endif %}
+                {% if obj.pass_criteria != "None" %}<span class="text-decoration-underline">Зачёт:</span> {{ obj.pass_criteria }}<br>{% endif %}
+                {% if obj.authors != "None" %}<span class="text-decoration-underline">Автор(ы):</span> {{ obj.authors }}<br>{% endif %}
+                {% if obj.sources != "None" %}<span class="text-decoration-underline">Источник(и):</span> {{ obj.sources | urlize(trim_url_limit=40) }}<br>{% endif %}
+              </p>
+            </div>
+          </div>
+          <br>
+        {% endfor %}
+        <br>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

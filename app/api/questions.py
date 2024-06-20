@@ -6,25 +6,20 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.utils import check_superuser_or_user_who_added
+from app.core.constants import (DEFAULT_QUESTIONS_QUANTITY,
+                                MAX_QUESTIONS_QUANTITY,
+                                MIN_SEARCH_PATTERN_LENGTH)
 from app.core.db import get_async_session
 from app.core.users import current_superuser, current_user
-from app.crud.questions_api import (
-    create_question, edit_question,
-    get_initial_query,
-    get_question_or_404,
-    get_valid_question_or_404,
-    get_random_package
-)
+from app.crud.questions_api import (create_question, edit_question,
+                                    get_initial_query, get_question_or_404,
+                                    get_random_package,
+                                    get_valid_question_or_404)
 from app.models.questions import Question, QuestionType
-from app.api.constants import MAX_QUESTIONS_QUANTITY
 from app.models.users import User
-from app.schemas.questions import (
-    QuestionCreate,
-    QuestionDB,
-    QuestionDBWithStatus,
-    QuestionStatusUpdate,
-    QuestionUpdate
-)
+from app.schemas.questions import (QuestionCreate, QuestionDB,
+                                   QuestionDBWithStatus, QuestionStatusUpdate,
+                                   QuestionUpdate)
 
 router = APIRouter(
     prefix='/questions',
@@ -87,9 +82,9 @@ async def get_random_questions_set(
     summary='Поиск вопросов.'
 )
 async def search_questions(
-    search_pattern: str = Query(..., min_length=5),
+    search_pattern: str = Query(..., min_length=MIN_SEARCH_PATTERN_LENGTH),
     quantity: int = Query(
-        default=5,
+        default=DEFAULT_QUESTIONS_QUANTITY,
         ge=1,
         le=MAX_QUESTIONS_QUANTITY,
         description='Количество вопросов в выдаче.'),
