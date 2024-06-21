@@ -1,5 +1,7 @@
 from fastapi.templating import Jinja2Templates
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 
 class Settings(BaseSettings):
@@ -24,3 +26,5 @@ class Settings(BaseSettings):
 settings = Settings()
 
 templates = Jinja2Templates(directory=settings.templates_dir)
+
+limiter = Limiter(key_func=get_remote_address)

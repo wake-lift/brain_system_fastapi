@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, Request
 from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import templates
+from app.core.config import limiter, templates
+import app.core.constants as const
 from app.core.db import get_async_session
 from app.crud.brain_system import get_bought_in_products
 from app.pages.utils import create_bom_file
@@ -15,6 +16,7 @@ router = APIRouter(
 
 
 @router.get('/operating-principle/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def operating(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/operating_principle.html'
@@ -22,6 +24,7 @@ async def operating(request: Request):
 
 
 @router.get('/electric-schematics/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def circuit(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/circuit.html'
@@ -29,6 +32,7 @@ async def circuit(request: Request):
 
 
 @router.get('/pcb/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def pcb(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/pcb.html'
@@ -36,6 +40,7 @@ async def pcb(request: Request):
 
 
 @router.get('/printed-parts/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def printed(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/printed_parts.html'
@@ -43,6 +48,7 @@ async def printed(request: Request):
 
 
 @router.get('/bought-in-products/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def bought(
     request: Request,
     session: AsyncSession = Depends(get_async_session)
@@ -56,6 +62,7 @@ async def bought(
 
 
 @router.get('/export_model_to_ods/')
+@limiter.limit(const.EXPORT_MODEL_TO_ODS_THROTTLING_RATE)
 async def export_model_to_ods(
     request: Request,
     session: AsyncSession = Depends(get_async_session)
@@ -69,6 +76,7 @@ async def export_model_to_ods(
 
 
 @router.get('/firmware/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def firmware(request: Request):
     return templates.TemplateResponse(
         request=request, name='/brain_system/firmware.html'

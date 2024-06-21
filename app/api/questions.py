@@ -1,15 +1,14 @@
 from random import choices
 
-from fastapi import APIRouter, Depends, Path, Query
+from fastapi import APIRouter, Depends, Path, Query, Request
 from pydantic.json_schema import SkipJsonSchema
 from sqlalchemy import false, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.utils import check_superuser_or_user_who_added
-from app.core.constants import (DEFAULT_QUESTIONS_QUANTITY,
-                                MAX_QUESTIONS_QUANTITY,
-                                MIN_SEARCH_PATTERN_LENGTH)
+import app.core.constants as const
 from app.core.db import get_async_session
+from app.core.config import limiter
 from app.core.users import current_superuser, current_user
 from app.crud.questions_api import (create_question, edit_question,
                                     get_initial_query, get_question_or_404,
@@ -33,7 +32,9 @@ router = APIRouter(
     response_model_exclude_none=True,
     summary='Получить случайный пакет.'
 )
+@limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def get_random_package_set(
+    request: Request,
     session: AsyncSession = Depends(get_async_session)
 ):
     """Получить случайный турнирный пакет вопросов."""
@@ -46,12 +47,14 @@ async def get_random_package_set(
     response_model_exclude_none=True,
     summary='Получить случайные вопросы.'
 )
+@limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def get_random_questions_set(
     *,
+    request: Request,
     quantity: int = Query(
         default=1,
         ge=1,
-        le=MAX_QUESTIONS_QUANTITY,
+        le=const.MAX_QUESTIONS_QUANTITY,
         description='Количество случайнах вопросов'
     ),
     question_type: QuestionType | SkipJsonSchema[None] = Query(
@@ -81,12 +84,17 @@ async def get_random_questions_set(
     response_model_exclude_none=True,
     summary='Поиск вопросов.'
 )
+@limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def search_questions(
-    search_pattern: str = Query(..., min_length=MIN_SEARCH_PATTERN_LENGTH),
+    request: Request,
+    search_pattern: str = Query(
+        ...,
+        min_length=const.MIN_SEARCH_PATTERN_LENGTH
+    ),
     quantity: int = Query(
-        default=DEFAULT_QUESTIONS_QUANTITY,
+        default=const.DEFAULT_QUESTIONS_QUANTITY,
         ge=1,
-        le=MAX_QUESTIONS_QUANTITY,
+        le=const.MAX_QUESTIONS_QUANTITY,
         description='Количество вопросов в выдаче.'),
     session: AsyncSession = Depends(get_async_session)
 ):
@@ -112,7 +120,9 @@ async def search_questions(
     response_model_exclude_none=True,
     summary='Добавить вопрос.'
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def add_question(
+    request: Request,
     question: QuestionCreate,
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user),
@@ -134,8 +144,10 @@ async def add_question(
     response_model_exclude_none=True,
     summary='Получить вопрос.'
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def get_question(
     *,
+    request: Request,
     id: int = Path(..., gt=0, description='id вопроса в Базе.'),
     session: AsyncSession = Depends(get_async_session)
 ):
@@ -152,7 +164,9 @@ async def get_question(
     response_model_exclude_none=True,
     summary=('Откорректировать вопрос.')
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def modify_question(
+    request: Request,
     modified_question: QuestionUpdate,
     id: int = Path(..., gt=0, description='id вопроса в Базе.'),
     session: AsyncSession = Depends(get_async_session),
@@ -175,7 +189,9 @@ async def modify_question(
     response_model_exclude_none=True,
     summary='Изменить статус вопроса.'
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def modify_question_status(
+    request: Request,
     modified_status: QuestionStatusUpdate,
     id: int = Path(..., gt=0, description='id вопроса в Базе.'),
     session: AsyncSession = Depends(get_async_session),
@@ -196,7 +212,9 @@ async def modify_question_status(
     '/{id}',
     summary=('Удалить вопрос.')
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def delete_question(
+    request: Request,
     id: int = Path(..., gt=0, description='id вопроса в Базе.'),
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user),

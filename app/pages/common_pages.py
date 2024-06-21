@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette_wtf import csrf_protect
 
-from app.core.config import templates
+from app.core.config import limiter, templates
+import app.core.constants as const
 from app.core.db import get_async_session
 from app.crud.feedback import add_feedback_to_db
 from app.pages.forms import FeedbackForm
@@ -15,6 +16,7 @@ router = APIRouter(
 
 
 @router.get('/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def index(request: Request):
     return templates.TemplateResponse(
         request=request, name='/common_pages/main.html'
@@ -22,15 +24,18 @@ async def index(request: Request):
 
 
 @router.get('/legal/')
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def legal(request: Request):
     return templates.TemplateResponse(
-        request=request, name='/common_pages/legal.html'
+        request=request,
+        name='/common_pages/legal.html',
     )
 
 
 @csrf_protect
 @router.get('/feedback/')
 @router.post('/feedback/')
+@limiter.limit(const.FEEDBACK_THROTTLING_RATE)
 async def feedback(
     request: Request,
     session: AsyncSession = Depends(get_async_session),

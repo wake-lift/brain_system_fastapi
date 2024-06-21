@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import limiter
+import app.core.constants as const
 from app.core.db import get_async_session
 from app.core.users import auth_backend, current_user, fastapi_users
 from app.models.questions import Question
@@ -30,7 +32,9 @@ router.include_router(
     tags=['Пользователи'],
     summary='Получить вопросы, добавленные в Базу текущим пользователем.'
 )
+@limiter.limit(const.BASE_THROTTLING_RATE)
 async def get_users_questions(
+    request: Request,
     session: AsyncSession = Depends(get_async_session),
     user: User = Depends(current_user)
 
