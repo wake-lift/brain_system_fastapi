@@ -29,7 +29,6 @@ class Question(Base):
     number: Mapped[int | None] = mapped_column(SmallInteger())
     question_type: Mapped[QuestionType] = mapped_column(
         default=QuestionType.Ч,
-        index=True
     )
     question: Mapped[str] = mapped_column(Text(), index=True)
     answer: Mapped[str] = mapped_column(Text())
@@ -39,8 +38,8 @@ class Question(Base):
     comments: Mapped[str | None] = mapped_column(Text())
     """Вопросы, которые не годятся для выдачи: содержат ссылку на изображение,
     угловые скобки, некодируемый набор символов и т.п."""
-    is_condemned: Mapped[bool] = mapped_column(default=False, index=True)
-    is_published: Mapped[bool] = mapped_column(default=False, index=True)
+    is_condemned: Mapped[bool] = mapped_column(default=False)
+    is_published: Mapped[bool] = mapped_column(default=False)
     user_id: Mapped[int | None] = mapped_column(ForeignKey('user.id'))
     user: Mapped[Optional['User']] = relationship(back_populates='questions')
 

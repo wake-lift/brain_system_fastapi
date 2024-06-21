@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import random
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import Select, Sequence, func, select
+from sqlalchemy import Select, Sequence, false, func, select, true
 
 from app.core.constants import REFRESH_INTERVAL, SET_FOR_RANDOMIZING
 from app.models.questions import Question
@@ -28,8 +28,8 @@ async def get_max_question_sets(
                 select(func.count())
                 .select_from(Question)
                 .filter(
-                    Question.is_condemned == 0,
-                    Question.is_published == 1,
+                    Question.is_condemned == false(),
+                    Question.is_published == true(),
                     Question.question_type == question_type
                 )
             )
@@ -60,8 +60,8 @@ def get_base_query(question_type: str) -> Select:
         Question.comments
     ).filter(
         Question.question_type == question_type,
-        Question.is_condemned == 0,
-        Question.is_published == 1
+        Question.is_condemned == false(),
+        Question.is_published == true()
     )
 
 
@@ -91,7 +91,7 @@ async def get_random_package(
 ) -> Sequence:
     random_package = await session.execute(
         select(Question.package).
-        group_by(Question.package).
+        group_by(Question.package, Question.question_type).
         having(Question.question_type == question_type).
         order_by(func.random())
     )

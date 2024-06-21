@@ -12,7 +12,12 @@ class Settings(BaseSettings):
                                   'созданию брейн-системы.')
     static_dir: str = 'app/static'
     templates_dir: str = 'app/templates'
-    database_url: str
+    postgres_user: str
+    postgres_password: str
+    postgres_db: str
+    postgres_db_host: str
+    postgres_db_port: str
+    sqlite_database_url: str
     auth_token_secret: str
 
 

@@ -2,7 +2,7 @@ from random import choices
 
 from fastapi import APIRouter, Depends, Path, Query
 from pydantic.json_schema import SkipJsonSchema
-from sqlalchemy import select
+from sqlalchemy import false, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.utils import check_superuser_or_user_who_added
@@ -97,8 +97,8 @@ async def search_questions(
     questions = await session.execute(
         select(Question)
         .filter(
-            Question.is_condemned == 0,
-            Question.is_published == 1,
+            Question.is_condemned == false(),
+            Question.is_published == true(),
             Question.question.icontains(search_pattern)
         )
         .limit(quantity)

@@ -3,7 +3,7 @@ import random
 from fastapi import Depends, HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
-from sqlalchemy import Select, func, select
+from sqlalchemy import Select, false, func, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.constants import REFRESH_INTERVAL, SET_FOR_RANDOMIZING
@@ -41,7 +41,10 @@ async def get_max_question_type_quantity(
         query = (
             select(Question.question_type, func.count())
             .select_from(Question)
-            .filter(Question.is_condemned == 0, Question.is_published == 1)
+            .filter(
+                Question.is_condemned == false(),
+                Question.is_published == true()
+            )
             .group_by(Question.question_type)
         )
         qunatities = await session.execute(query)
@@ -65,8 +68,8 @@ async def get_initial_query(
     max_question_type_dict = await get_max_question_type_quantity(session)
     max_question_type_quantity = max_question_type_dict['total']
     query = select(Question).filter(
-        Question.is_condemned == 0,
-        Question.is_published == 1
+        Question.is_condemned == false(),
+        Question.is_published == true()
     )
     if question_type:
         query = query.filter(Question.question_type == question_type)
