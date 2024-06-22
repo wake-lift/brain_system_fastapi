@@ -1,6 +1,7 @@
 from random import choices
 
 from fastapi import APIRouter, Depends, Path, Query, Request
+from fastapi_cache.decorator import cache
 from pydantic.json_schema import SkipJsonSchema
 from sqlalchemy import false, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -144,6 +145,7 @@ async def add_question(
     response_model_exclude_none=True,
     summary='Получить вопрос.'
 )
+@cache(expire=const.DEFAULT_CACHING_TIME)
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def get_question(
     *,

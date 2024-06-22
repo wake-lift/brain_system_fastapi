@@ -8,7 +8,7 @@ from starlette_wtf import CSRFProtectMiddleware
 
 from app.api.questions import router as api_questions_router
 from app.api.users import router as users_router
-from app.core.config import settings, limiter
+from app.core.config import settings, lifespan, limiter
 from app.pages.common_pages import router as common_pages_router
 from app.pages.brain_system import router as brain_system_router
 from app.pages.error_handlers import custom_error_handlers
@@ -17,7 +17,8 @@ from app.pages.questions import router as pages_questions_router
 
 app_api = FastAPI(
     title=settings.app_api_title,
-    description=settings.app_api_description
+    description=settings.app_api_description,
+    lifespan=lifespan
 )
 app_api.state.limiter = limiter
 app_api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
@@ -30,8 +31,10 @@ app_pages = FastAPI(
     title=settings.app_pages_title,
     description=settings.app_pages_description,
     middleware=[
-        Middleware(SessionMiddleware, secret_key='***REPLACEME1***'),
-        Middleware(CSRFProtectMiddleware, csrf_secret='***REPLACEME2***'),
+        Middleware(SessionMiddleware,
+                   secret_key=settings.session_middleware_secret_key),
+        Middleware(CSRFProtectMiddleware,
+                   csrf_secret=settings.csrf_middleware_secret_key),
     ],
     exception_handlers=custom_error_handlers,
     docs_url=None,

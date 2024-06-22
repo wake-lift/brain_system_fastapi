@@ -96,8 +96,8 @@ async def get_valid_question_or_404(
     question = await session.execute(
         select(Question).filter(
             Question.id == question_id,
-            Question.is_condemned == 0,
-            Question.is_published == 1
+            Question.is_condemned == false(),
+            Question.is_published == true()
         )
     )
     question = question.scalars().first()

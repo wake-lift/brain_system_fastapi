@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Request
+from fastapi_cache.decorator import cache
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -32,6 +33,7 @@ router.include_router(
     tags=['Пользователи'],
     summary='Получить вопросы, добавленные в Базу текущим пользователем.'
 )
+@cache(expire=const.DEFAULT_CACHING_TIME)
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def get_users_questions(
     request: Request,

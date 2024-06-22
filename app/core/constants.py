@@ -40,3 +40,6 @@ EXPORT_MODEL_TO_ODS_THROTTLING_RATE: str = '2/minute'
 # Ограничения количества запросов в единицу времени
 # к страницам выдачи вопросов
 GENERATE_QUESTIONS_THROTTLING_RATE: str = '5/minute'
+
+# Время кэширования страниц по умолчанию (в секундах)
+DEFAULT_CACHING_TIME: int = 60 * 5
