@@ -1,0 +1,10 @@
+venv_bot
+venv_app
+.git
+.idea
+.vscode
+.env
+db.sqlite3
+.log
+__pycache__/
+db.sqlite

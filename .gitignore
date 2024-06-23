@@ -162,3 +162,4 @@ cython_debug/
 db.sqlite
 venv_app/
 venv_bot/
+bs_backup.dump

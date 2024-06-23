@@ -1,0 +1,11 @@
+FROM python:3.12-bookworm
+
+WORKDIR /app
+
+COPY ./app/requirements_app.txt .
+
+RUN pip install --no-cache-dir -r requirements_app.txt
+
+COPY . .
+
+CMD ["fastapi", "run", "app/main.py", "--app", "app_pages", "--port", "9000"]

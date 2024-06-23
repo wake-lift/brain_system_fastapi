@@ -32,6 +32,7 @@ class Settings(BaseSettings):
     csrf_middleware_secret_key: str
     redis_host: str
     redis_port: str
+    redis_password: str
 
 
 settings = Settings()
@@ -43,8 +44,9 @@ limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
-    redis = aioredis.from_url(
-        f'redis://{settings.redis_host}:{settings.redis_port}'
-    )
+    redis = aioredis.from_url((
+        f'redis://:{settings.redis_password}@{settings.redis_host}'
+        f':{settings.redis_port}'
+    ))
     FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
     yield

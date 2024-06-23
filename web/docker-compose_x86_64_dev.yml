@@ -1,0 +1,68 @@
+name: brain_system_dev
+
+volumes:
+  pg_data:
+  static:
+
+
+services:
+
+  db:
+    image: postgres:16
+    restart: always
+    env_file: ../.env
+    volumes:
+      - pg_data:/var/lib/postgresql/data/
+  
+  redis:
+    image: redis:7
+    restart: always
+    env_file: ../.env
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --port "$${REDIS_PORT}" --requirepass "$${REDIS_PASSWORD}"
+  
+  tg_bot:
+    build:
+      context: ../telegram_bot/
+      dockerfile: telegram_bot_x86_64.Dockerfile
+    env_file: ../.env
+    restart: always
+    depends_on:
+      - db
+  
+  backend_api:
+    build:
+      context: ../
+      dockerfile: backend_api_x86_64.Dockerfile
+    env_file: ../.env
+    depends_on:
+      - db
+      - redis
+  
+  backend_pages:
+    build:
+      context: ../
+      dockerfile: backend_pages_x86_64.Dockerfile
+    env_file: ../.env
+    volumes:
+      - static:/app/static/
+    depends_on:
+      - db
+      - redis
+  
+  nginx:
+    build:
+      context: ./
+      dockerfile: nginx_x86_64.Dockerfile
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - static:/staticfiles/
+    depends_on:
+      - db
+      - redis
+      - backend_api
+      - backend_pages
