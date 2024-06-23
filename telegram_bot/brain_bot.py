@@ -19,7 +19,7 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
-handler = RotatingFileHandler('bot_log.log', maxBytes=50000000, backupCount=5)
+handler = RotatingFileHandler('main_log.log', maxBytes=50000000, backupCount=5)
 logger.addHandler(handler)
 
 CORRESPONDANCE: dict = {
@@ -31,9 +31,15 @@ ANSWER_TEXT: None | str = None
 CURRENT_QUESTION_TYPE: None | str = 'Ч'
 
 
-def check_tokens(token) -> bool:
+def check_tokens() -> bool:
     """Проверяет доступность переменных окружения."""
-    return bool(token)
+    return all([
+        bool(os.getenv('TELEGRAM_TOKEN')),
+        (
+            os.getenv('DATABASE_TYPE') == 'postgres'
+            or os.getenv('DATABASE_TYPE') == 'sqlite'
+        )
+    ])
 
 
 def button_shortcut(button_names: list[list]) -> ReplyKeyboardMarkup:
@@ -83,7 +89,7 @@ async def get_question(question_type: str) -> Any:
             )
             question = await conn.fetchrow(query, question_type)
             await conn.close()
-        if os.getenv('DATABASE_TYPE') == 'sqlite':
+        elif os.getenv('DATABASE_TYPE') == 'sqlite':
             async with aiosqlite.connect(os.getenv('SQLITE_DB_PATH')) as conn:
                 cursor = await conn.execute(query, question_type)
                 question = await cursor.fetchone()
@@ -204,13 +210,14 @@ async def handle_messages(update: Update,
 
 def main() -> None:
     """Start the bot."""
-    TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
-    if not check_tokens(TELEGRAM_TOKEN):
+    if not check_tokens():
         error_message = ('Работа бота остановлена:'
                          ' ошибка получения переменных окружения')
         logging.critical(error_message, exc_info=True)
         sys.exit(error_message)
-    application = Application.builder().token(TELEGRAM_TOKEN).build()
+    application = Application.builder().token(
+        os.getenv('TELEGRAM_TOKEN')
+    ).build()
     application.add_handler(CommandHandler("start", wake_up))
     application.add_handler(MessageHandler(
         filters.TEXT & ~filters.COMMAND, handle_messages
