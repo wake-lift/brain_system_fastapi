@@ -47,7 +47,7 @@ services:
       dockerfile: backend_pages_ARM64.Dockerfile
     env_file: ../.env
     volumes:
-      - static:/app/static/
+      - static:/app/app/static/
     depends_on:
       - db
       - redis
