@@ -75,10 +75,10 @@
                     {% for line in obj.answer.split('\n') %}{{ line }} <br>{% endfor %}
                   {% endif %}</p>
                 <p class="card-text fst-italic">
-                  {% if obj.comments != "None" %}<span class="text-decoration-underline">Комментарий:</span> {{ obj.comments }}<br>{% endif %}
-                  {% if obj.pass_criteria != "None" %}<span class="text-decoration-underline">Зачёт:</span> {{ obj.pass_criteria }}<br>{% endif %}
-                  {% if obj.authors != "None" %}<span class="text-decoration-underline">Автор(ы):</span> {{ obj.authors }}<br>{% endif %}
-                  {% if obj.sources != "None" %}<span class="text-decoration-underline">Источник(и):</span> {{ obj.sources | urlize(trim_url_limit=40) }}<br>{% endif %}
+                  {% if obj.comments != None %}<span class="text-decoration-underline">Комментарий:</span> {{ obj.comments }}<br>{% endif %}
+                  {% if obj.pass_criteria != None %}<span class="text-decoration-underline">Зачёт:</span> {{ obj.pass_criteria }}<br>{% endif %}
+                  {% if obj.authors != None %}<span class="text-decoration-underline">Автор(ы):</span> {{ obj.authors }}<br>{% endif %}
+                  {% if obj.sources != None %}<span class="text-decoration-underline">Источник(и):</span> {{ obj.sources | urlize(trim_url_limit=40) }}<br>{% endif %}
                 </p>
               </div>
             </div>
