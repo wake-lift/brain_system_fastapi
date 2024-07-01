@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from typing import List
+from pydantic import BaseModel, EmailStr, Field
 
 from app.core.constants import MIN_QUESTION_LENGTH
 from app.models.questions import QuestionType
@@ -87,3 +88,8 @@ class QuestionUpdate(BaseModel):
 class QuestionStatusUpdate(BaseModel):
     is_condemned: bool | None = False
     is_published: bool | None = False
+
+
+class EmailForSendingPackage(BaseModel):
+    email: List[EmailStr] | None = Field(
+        None, examples=[['user_1@example.com', 'user_2@example.com'], ])

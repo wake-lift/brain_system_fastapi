@@ -6,7 +6,8 @@ from pydantic.json_schema import SkipJsonSchema
 from sqlalchemy import false, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.utils import check_superuser_or_user_who_added
+from app.api.utils import (check_superuser_or_user_who_added,
+                           get_package_questions_list)
 import app.core.constants as const
 from app.core.db import get_async_session
 from app.core.config import limiter
@@ -17,9 +18,10 @@ from app.crud.questions_api import (create_question, edit_question,
                                     get_valid_question_or_404)
 from app.models.questions import Question, QuestionType
 from app.models.users import User
-from app.schemas.questions import (QuestionCreate, QuestionDB,
+from app.schemas.questions import (EmailForSendingPackage, QuestionCreate, QuestionDB,
                                    QuestionDBWithStatus, QuestionStatusUpdate,
                                    QuestionUpdate)
+from app.tasks.questions import send_email
 
 router = APIRouter(
     prefix='/questions',
@@ -27,7 +29,7 @@ router = APIRouter(
 )
 
 
-@router.get(
+@router.post(
     '/random-package',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -36,14 +38,22 @@ router = APIRouter(
 @limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def get_random_package_set(
     request: Request,
+    email_address: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
-    """Получить случайный турнирный пакет вопросов."""
-    return await get_random_package(session)
+    """
+    Получить случайный турнирный пакет вопросов.
+    Если необходимо отправить пакет по почте - укажите адрес."""
+    package = await get_random_package(session)
+    package_questions_list, package_name = get_package_questions_list(package)
+    if email_address.email:
+        for addr in email_address.email:
+            send_email.delay(addr, package_questions_list, package_name)
+    return package
 
 
 @router.get(
-    '/random-question',
+    '/random-questions',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
     summary='Получить случайные вопросы.'
