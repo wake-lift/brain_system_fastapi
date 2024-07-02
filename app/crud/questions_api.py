@@ -7,7 +7,7 @@ from sqlalchemy import Select, false, func, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.constants import REFRESH_INTERVAL, SET_FOR_RANDOMIZING
-from app.core.db import get_async_session
+from app.core.db import get_async_session, sync_session_factory
 from app.models.questions import Question
 from app.models.users import User
 from app.schemas.questions import QuestionCreate
@@ -184,3 +184,14 @@ async def edit_question(
     await session.commit()
     await session.refresh(question)
     return question
+
+
+def get_unpublished_questions_num() -> int:
+    """
+    Возвращает количесвто неопубликованных вопросов.
+    """
+    with sync_session_factory() as sf:
+        questions_num = sf.execute(
+            select(func.count()).filter(Question.is_published == false())
+        )
+    return questions_num.scalars().first()

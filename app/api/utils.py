@@ -1,11 +1,12 @@
 from email.message import EmailMessage
 from io import BytesIO
-import os
+import smtplib
 from typing import List, Tuple
 
 from fastapi import HTTPException
 import pandas as pd
 
+from app.core.config import settings
 from app.models.questions import Question
 from app.models.users import User
 
@@ -42,7 +43,11 @@ def get_package_questions_list(
         }
         question_list.append(question_dict)
         question_number += 1
-    return question_list, question.package
+    try:
+        package_name = question.package
+    except UnboundLocalError:
+        package_name = None
+    return question_list, package_name
 
 
 def get_package_file(
@@ -67,7 +72,7 @@ def get_email_msg(
     email['Subject'] = (f'Пакет вопросов "{package_name}"'
                         if package_name
                         else 'Список вопросов')
-    email['From'] = os.getenv('EMAIL_HOST_USER')
+    email['From'] = settings.smtp_host_user
     email['To'] = email_to
     package_file.seek(0)
     package_file_binary = package_file.read()
@@ -78,3 +83,13 @@ def get_email_msg(
         filename=f'{package_name}.ods' if package_name else 'Список вопросов'
     )
     return email
+
+
+def send_email_message(email: EmailMessage) -> None:
+    with smtplib.SMTP_SSL(
+        settings.smtp_host, settings.smtp_port
+    ) as server:
+        server.login(
+            settings.smtp_host_user, settings.smtp_host_password
+        )
+        server.send_message(email)

@@ -21,18 +21,27 @@ class Settings(BaseSettings):
                                   'созданию брейн-системы.')
     static_dir: str = 'app/static'
     templates_dir: str = 'app/templates'
+    database_type: str
     postgres_user: str
     postgres_password: str
     postgres_db: str
     postgres_db_host: str
     postgres_db_port: str
-    sqlite_database_url: str
+    async_sqlite_url: str
+    sync_sqlite_url: str
     auth_token_secret: str
     session_middleware_secret_key: str
     csrf_middleware_secret_key: str
     redis_host: str
     redis_port: str
     redis_password: str
+    rabbitmq_default_user: str
+    rabbitmq_default_pass: str
+    rabbitmq_node_port: str
+    smtp_host_password: str
+    smtp_host: str
+    smtp_port: str
+    smtp_host_user: str
 
 
 settings = Settings()

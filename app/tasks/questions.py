@@ -1,17 +1,49 @@
-import os
-import smtplib
+from datetime import datetime, timezone
+from email.message import EmailMessage
 from typing import List
 
 from celery import Celery
+from celery.schedules import crontab
 
-from app.api.utils import get_email_msg, get_package_file
+from app.api.utils import get_email_msg, get_package_file, send_email_message
+from app.core.config import settings
+from app.crud.questions_api import get_unpublished_questions_num
 
+broker_url = (f'pyamqp://{settings.rabbitmq_default_user}'
+              f':{settings.rabbitmq_default_pass}@localhost:'
+              f'{settings.rabbitmq_node_port}//')
 
 celery_api = Celery(
     'api_tasks',
-    broker='pyamqp://guest@localhost//',
+    broker=broker_url,
     broker_connection_retry_on_startup=True
 )
+
+celery_api.conf.update(
+    timezone='Europe/Moscow',
+    enable_utc=False,
+)
+
+
+@celery_api.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(
+        crontab(hour=10, minute=00),
+        send_unpublished_questions_num.s(settings.smtp_host_user)
+    )
+
+
+@celery_api.task
+def send_unpublished_questions_num(emai_address: str) -> None:
+    questions_num = get_unpublished_questions_num()
+    email = EmailMessage()
+    email['Subject'] = ('Отчет о количестве неопубликованных вопросов')
+    email['From'] = settings.smtp_host_user
+    email['To'] = emai_address
+    body = (f'По состоянию на {datetime.now(timezone.utc)} в базе данных '
+            f'имеется {questions_num} неопубликованных вопросов')
+    email.set_content(body)
+    send_email_message(email)
 
 
 @celery_api.task()
@@ -20,10 +52,4 @@ def send_email(
 ) -> None:
     package_file = get_package_file(package_questions_list, package_name)
     email_msg = get_email_msg(email_to, package_file, package_name)
-    with smtplib.SMTP_SSL(
-        os.getenv('EMAIL_HOST'), os.getenv('EMAIL_PORT')
-    ) as server:
-        server.login(
-            os.getenv('EMAIL_HOST_USER'), os.getenv('EMAIL_HOST_PASSWORD')
-        )
-        server.send_message(email_msg)
+    send_email_message(email_msg)

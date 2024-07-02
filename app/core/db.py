@@ -1,12 +1,8 @@
-import os
-
-from dotenv import load_dotenv
+from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase, declared_attr
+from sqlalchemy.orm import DeclarativeBase, declared_attr, sessionmaker
 
 from app.core.config import settings
-
-load_dotenv('.env')
 
 
 class Base(DeclarativeBase):
@@ -19,16 +15,24 @@ class Base(DeclarativeBase):
         return f'<{self.__class__.__name__}, id = {self.id}>'
 
 
-if os.environ['DATABASE_TYPE'] == 'sqlite':
-    async_engine = create_async_engine(settings.sqlite_database_url, echo=True)
-if os.environ['DATABASE_TYPE'] == 'postgres':
-    postgres_database_url = (
-        f'postgresql+asyncpg://{settings.postgres_user}:'
+if settings.database_type == 'sqlite':
+    sync_engine = create_engine(settings.sync_sqlite_url, echo=True)
+    async_engine = create_async_engine(settings.async_sqlite_url, echo=True)
+if settings.database_type == 'postgres':
+    postgres_url_tail = (
+        f'://{settings.postgres_user}:'
         f'{settings.postgres_password}@{settings.postgres_db_host}:'
         f'{settings.postgres_db_port}/{settings.postgres_db}'
     )
-    async_engine = create_async_engine(postgres_database_url, echo=True)
 
+    sync_engine = create_engine(
+        'postgresql+psycopg2' + postgres_url_tail, echo=True
+    )
+    async_engine = create_async_engine(
+        'postgresql+asyncpg' + postgres_url_tail, echo=True
+    )
+
+sync_session_factory = sessionmaker(sync_engine)
 async_session_factory = async_sessionmaker(async_engine)
 
 
