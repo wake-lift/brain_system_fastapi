@@ -18,9 +18,9 @@ from app.crud.questions_api import (create_question, edit_question,
                                     get_valid_question_or_404)
 from app.models.questions import Question, QuestionType
 from app.models.users import User
-from app.schemas.questions import (EmailForSendingPackage, QuestionCreate, QuestionDB,
-                                   QuestionDBWithStatus, QuestionStatusUpdate,
-                                   QuestionUpdate)
+from app.schemas.questions import (EmailForSendingPackage, QuestionCreate,
+                                   QuestionDB, QuestionDBWithStatus,
+                                   QuestionStatusUpdate, QuestionUpdate)
 from app.tasks.questions import send_email
 
 router = APIRouter(
@@ -38,21 +38,21 @@ router = APIRouter(
 @limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def get_random_package_set(
     request: Request,
-    email_address: EmailForSendingPackage,
+    email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
     Получить случайный турнирный пакет вопросов.
-    Если необходимо отправить пакет по почте - укажите адрес."""
+    Если необходимо отправить пакет по почте - укажите адрес в теле запроса."""
     package = await get_random_package(session)
-    package_questions_list, package_name = get_package_questions_list(package)
-    if email_address.email:
-        for addr in email_address.email:
-            send_email.delay(addr, package_questions_list, package_name)
+    if email_addresses.email:
+        questions_list, package_name = get_package_questions_list(package)
+        for addr in email_addresses.email:
+            send_email.delay(addr, questions_list, package_name)
     return package
 
 
-@router.get(
+@router.post(
     '/random-questions',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -73,11 +73,13 @@ async def get_random_questions_set(
         description=('Тип вопросов. Если оставить поле пустым - '
                      'будут выбраны вопросы случайных категорий.')
     ),
+    email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
     Получить случайный набор вопросов.
     Можно указать количество вопросов в выдаче, а также тип вопросов.
+    Если необходимо отправить пакет по почте - укажите адрес в теле запроса.
     """
     if question_type:
         question_type = question_type.name
@@ -86,10 +88,14 @@ async def get_random_questions_set(
     questions = questions.scalars().all()
     choices_quantity = min(quantity, len(questions))
     questions = choices(questions, k=choices_quantity)
+    if email_addresses.email:
+        questions_list, _ = get_package_questions_list(questions)
+        for addr in email_addresses.email:
+            send_email.delay(addr, questions_list)
     return questions
 
 
-@router.get(
+@router.post(
     '/search',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -97,6 +103,7 @@ async def get_random_questions_set(
 )
 @limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def search_questions(
+    *,
     request: Request,
     search_pattern: str = Query(
         ...,
@@ -107,11 +114,13 @@ async def search_questions(
         ge=1,
         le=const.MAX_QUESTIONS_QUANTITY,
         description='Количество вопросов в выдаче.'),
+    email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
-    Поиск по тексту вопроса. Регистр имеет значение.
+    Поиск по тексту вопроса. Регистр не имеет значения.
     Можно указать количество вопросов в выдаче.
+    Если необходимо отправить выборку по почте - укажите адрес в теле запроса.
     """
     questions = await session.execute(
         select(Question)
@@ -122,7 +131,12 @@ async def search_questions(
         )
         .limit(quantity)
     )
-    return questions.scalars().all()
+    questions = questions.scalars().all()
+    if email_addresses.email:
+        questions_list, _ = get_package_questions_list(questions)
+        for addr in email_addresses.email:
+            send_email.delay(addr, questions_list)
+    return questions
 
 
 @router.post(

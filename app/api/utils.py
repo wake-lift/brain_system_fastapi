@@ -45,19 +45,28 @@ def get_package_questions_list(
     return question_list, question.package
 
 
-def get_package_file(question_list: List[dict], package_name: str) -> BytesIO:
+def get_package_file(
+        question_list: List[dict], package_name: str = None
+) -> BytesIO:
     df = pd.DataFrame(question_list)
     output = BytesIO()
     with pd.ExcelWriter(output, engine='odf') as doc:
-        df.to_excel(doc, sheet_name=f'Пакет "{package_name}"', index=False)
+        df.to_excel(
+            doc,
+            sheet_name=(f'Пакет "{package_name}"'
+                        if package_name
+                        else 'Список вопросов'),
+            index=False)
     return output
 
 
 def get_email_msg(
-        email_to: str, package_file: BytesIO, package_name: str
+        email_to: str, package_file: BytesIO, package_name: str = None
 ) -> EmailMessage:
     email = EmailMessage()
-    email['Subject'] = f'Пакет вопросов "{package_name}"'
+    email['Subject'] = (f'Пакет вопросов "{package_name}"'
+                        if package_name
+                        else 'Список вопросов')
     email['From'] = os.getenv('EMAIL_HOST_USER')
     email['To'] = email_to
     package_file.seek(0)
@@ -66,6 +75,6 @@ def get_email_msg(
         package_file_binary,
         maintype='application',
         subtype='octet-stream',
-        filename=f'{package_name}.ods'
+        filename=f'{package_name}.ods' if package_name else 'Список вопросов'
     )
     return email

@@ -16,7 +16,7 @@ celery_api = Celery(
 
 @celery_api.task()
 def send_email(
-    email_to: str, package_questions_list: List[dict], package_name: str
+    email_to: str, package_questions_list: List[dict], package_name: str = None
 ) -> None:
     package_file = get_package_file(package_questions_list, package_name)
     email_msg = get_email_msg(email_to, package_file, package_name)
