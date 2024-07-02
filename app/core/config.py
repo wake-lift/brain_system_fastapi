@@ -38,6 +38,7 @@ class Settings(BaseSettings):
     rabbitmq_default_user: str
     rabbitmq_default_pass: str
     rabbitmq_node_port: str
+    rabbitmq_hostname: str
     smtp_host_password: str
     smtp_host: str
     smtp_port: str

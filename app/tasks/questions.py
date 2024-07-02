@@ -10,8 +10,9 @@ from app.core.config import settings
 from app.crud.questions_api import get_unpublished_questions_num
 
 broker_url = (f'pyamqp://{settings.rabbitmq_default_user}'
-              f':{settings.rabbitmq_default_pass}@localhost:'
-              f'{settings.rabbitmq_node_port}//')
+              f':{settings.rabbitmq_default_pass}'
+              f'@{settings.rabbitmq_hostname}'
+              f':{settings.rabbitmq_node_port}//')
 
 celery_api = Celery(
     'api_tasks',
