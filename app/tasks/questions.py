@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 from email.message import EmailMessage
 from typing import List
 
@@ -41,8 +41,9 @@ def send_unpublished_questions_num(emai_address: str) -> None:
     email['Subject'] = ('Отчет о количестве неопубликованных вопросов')
     email['From'] = settings.smtp_host_user
     email['To'] = emai_address
-    body = (f'По состоянию на {datetime.now(timezone.utc)} в базе данных '
-            f'имеется {questions_num} неопубликованных вопросов')
+    body = ('По состоянию на '
+            f'{datetime.now().strftime("%d.%m.%y, %H.%M UTC+3")} в базе '
+            f'данных имеется {questions_num} неопубликованных вопросов')
     email.set_content(body)
     send_email_message(email)
 
