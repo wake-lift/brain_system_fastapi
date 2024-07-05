@@ -163,3 +163,4 @@ db.sqlite
 venv_app/
 venv_bot/
 bs_backup.dump
+db_test.sqlite
