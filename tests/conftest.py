@@ -1,19 +1,26 @@
 import asyncio
 from random import choice, randint
 from typing import AsyncGenerator, Generator, List, Tuple
+from unittest import mock
 
 from httpx import AsyncClient
 import pytest_asyncio
-from sqlalchemy import NullPool, insert
+from sqlalchemy import NullPool, create_engine, insert
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
+from sqlalchemy.orm import sessionmaker
 
 from app.core.db import get_async_session, Base
 from app.core.users import current_superuser, current_user
-from app.main import app_api
 from app.models.brain_system import BoughtInProduct, ProductLink, Unit
 from app.models.questions import Question
 from app.models.users import User
+
+mock.patch(
+    'fastapi_cache.decorator.cache',
+    lambda *args, **kwargs: lambda f: f
+).start()
+from app.main import app_api # noqa (приложение должно быть импортировано после подмены декоратора кэширования)
 
 DATABASE_URL_TEST: str = 'sqlite+aiosqlite:///db_test.sqlite'
 
@@ -29,12 +36,17 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     loop.close()
 
 
+sync_engine_test = create_engine(
+    DATABASE_URL_TEST,
+    poolclass=NullPool,
+)
 async_engine_test = create_async_engine(
     DATABASE_URL_TEST,
     poolclass=NullPool,
 )
 
 async_session_factory_test = async_sessionmaker(async_engine_test)
+sync_session_factory_test = sessionmaker(sync_engine_test)
 
 
 async def get_async_session_test() -> AsyncGenerator[AsyncSession, None]:
@@ -52,61 +64,46 @@ async def get_test_database() -> AsyncGenerator[None, None]:
     """
     Создает пустые таблицы в тестовой базе данных.
     """
-    async with async_engine_test.begin() as aconn:
-        await aconn.run_sync(Base.metadata.create_all)
-    yield
-    async with async_engine_test.begin() as aconn:
-        await aconn.run_sync(Base.metadata.drop_all)
+    try:
+        async with async_engine_test.begin() as aconn:
+            await aconn.run_sync(Base.metadata.create_all)
+            await aconn.execute(
+                insert(User).values(gen_data_for_user_table())
+            )
+            await aconn.execute(
+                insert(Question).values(gen_data_for_question_table())
+            )
+            unit_data, product_data, link_data = gen_data_for_brain_tables()
+            await aconn.execute(insert(Unit).values(unit_data))
+            await aconn.execute(insert(BoughtInProduct).values(product_data))
+            await aconn.execute(insert(ProductLink).values(link_data))
+        yield
+        async with async_engine_test.begin() as aconn:
+            await aconn.run_sync(Base.metadata.drop_all)
+    finally:
+        async with async_engine_test.begin() as aconn:
+            await aconn.run_sync(Base.metadata.drop_all)
+    # finally: pass
 
 
-@pytest_asyncio.fixture()
-async def fill_user_table(get_test_database) -> None:
+def gen_data_for_user_table() -> List[dict]:
     """
-    Наполняет таблицу "User" тестовыми данными.
+    Полготавливает тестовые данные для наполнения таблицы "User".
     """
-    async with async_engine_test.begin() as aconn:
-        await aconn.execute(
-            insert(User).values([
-                {'id': 1, 'username': 'regularuser',
-                 'email': 'regularuser@example.com',
-                 'hashed_password': '123456', 'is_active': 1,
-                 'is_superuser': 0, 'is_verified': 1},
-                {'id': 2, 'username': 'superuser',
-                 'email': 'superuser@example.com',
-                 'hashed_password': '7891011', 'is_active': 1,
-                 'is_superuser': 1, 'is_verified': 1}
-            ])
-        )
+
+    return [
+        {'id': 1, 'username': 'regularuser',
+         'email': 'regularuser@example.com',
+         'hashed_password': '123456', 'is_active': True,
+         'is_superuser': False, 'is_verified': True},
+        {'id': 2, 'username': 'superuser',
+         'email': 'superuser@example.com',
+         'hashed_password': '7891011', 'is_active': True,
+         'is_superuser': True, 'is_verified': True}
+    ]
 
 
-@pytest_asyncio.fixture()
-async def fill_question_table(get_test_database, fill_user_table) -> None:
-    """
-    Наполняет таблицу "Question" тестовыми данными.
-    """
-    async with async_engine_test.begin() as aconn:
-        await aconn.execute(
-            insert(Question).values(gen_data_for_questions_table())
-        )
-
-
-@pytest_asyncio.fixture()
-async def fill_brain_system_tables(get_test_database) -> None:
-    """
-    Наполняет таблицы "Unit", "BoughtInProduct",
-    "ProductLink" тестовыми данными.
-    """
-    unit_data, product_data, link_data = gen_data_for_brain_system_tables()
-    stmt_unit = insert(Unit).values(unit_data)
-    stmt_product = insert(BoughtInProduct).values(product_data)
-    stmt_link = insert(ProductLink).values(link_data)
-    async with async_engine_test.begin() as aconn:
-        await aconn.execute(stmt_unit)
-        await aconn.execute(stmt_product)
-        await aconn.execute(stmt_link)
-
-
-def gen_data_for_questions_table() -> List[dict]:
+def gen_data_for_question_table() -> List[dict]:
     """
     Полготавливает тестовые данные для наполнения таблицы "Question".
     """
@@ -115,15 +112,17 @@ def gen_data_for_questions_table() -> List[dict]:
         res.append({
             'id': i,
             'package': 'package_1' if i % 2 else 'package_2',
-            'question_type': choice(['Ч', 'Б', 'Я']),
+            'question_type': 'Ч' if i == 1 else choice(['Ч', 'Б', 'Я']),
             'question': f'Текст вопроса_{i}',
             'answer': f'Ответ на вопрос {i}',
+            'is_condemned': False,
+            'is_published': True,
             'user_id': 1 if i % 2 else 2
         })
     return res
 
 
-def gen_data_for_brain_system_tables() -> Tuple[List[dict]]:
+def gen_data_for_brain_tables() -> Tuple[List[dict]]:
     """
     Полготавливает тестовые данные для наполнения таблиц "Unit",
     "BoughtInProduct", "ProductLink".
@@ -145,7 +144,7 @@ def gen_data_for_brain_system_tables() -> Tuple[List[dict]]:
     return res_unit, res_boughtinproduct, res_productlink
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest_asyncio.fixture()
 async def non_authenticated_api_client() -> AsyncGenerator[AsyncClient, None]:
     """Создает генератор анонимных сессий для API."""
     async with AsyncClient(app=app_api, base_url='http://test') as ac:
@@ -160,9 +159,9 @@ async def regular_user_api_client() -> AsyncGenerator[AsyncClient, None]:
         username='regularuser',
         email='regularuser@example.com',
         hashed_password=123456,
-        is_active=1,
-        is_superuser=0,
-        is_verified=1
+        is_active=True,
+        is_superuser=False,
+        is_verified=True
     )
     app_api.dependency_overrides[current_user] = lambda: regular_user
     async with AsyncClient(app=app_api, base_url='http://test') as ac:
@@ -177,9 +176,9 @@ async def superuser_api_client() -> AsyncGenerator[AsyncClient, None]:
         username='superuser',
         email='superuser@example.com',
         hashed_password=7891011,
-        is_active=1,
-        is_superuser=1,
-        is_verified=1
+        is_active=True,
+        is_superuser=True,
+        is_verified=True
     )
     app_api.dependency_overrides[current_superuser] = lambda: superuser
     async with AsyncClient(app=app_api, base_url='http://test') as ac:
