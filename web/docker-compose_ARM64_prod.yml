@@ -52,6 +52,16 @@ services:
       - db
       - redis
   
+  celery:
+    build:
+      context: ../
+      dockerfile: backend_celery_ARM64.Dockerfile
+    env_file: ../.env
+    depends_on:
+      - db
+      - backend_api
+      - redis
+  
   nginx:
     build:
       context: ./

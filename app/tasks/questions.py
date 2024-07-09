@@ -9,10 +9,9 @@ from app.api.utils import get_email_msg, get_package_file, send_email_message
 from app.core.config import settings
 from app.crud.questions_api import get_unpublished_questions_num
 
-broker_url = (f'pyamqp://{settings.rabbitmq_default_user}'
-              f':{settings.rabbitmq_default_pass}'
-              f'@{settings.rabbitmq_hostname}'
-              f':{settings.rabbitmq_node_port}//')
+
+broker_url = (f'redis://:{settings.redis_password}@{settings.redis_host}:'
+              f'{settings.redis_port}/0')
 
 celery_api = Celery(
     'api_tasks',

@@ -51,14 +51,7 @@ services:
     depends_on:
       - db
       - redis
-  
-  rabbitmq:
-    image: rabbitmq:3-management
-    restart: always
-    env_file: ../.env
-    ports:
-      - "15672:15672"
-  
+ 
   celery:
     build:
       context: ../
@@ -66,8 +59,8 @@ services:
     env_file: ../.env
     depends_on:
       - db
+      - backend_api
       - redis
-      - rabbitmq
 
   nginx:
     build:
