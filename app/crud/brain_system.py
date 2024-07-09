@@ -1,7 +1,8 @@
 from sqlalchemy import Sequence, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
 
-from app.models.brain_system import BoughtInProduct, ProductLink, Unit
+from app.models.brain_system import BoughtInProduct
 
 
 async def get_bought_in_products(
@@ -9,9 +10,11 @@ async def get_bought_in_products(
 ) -> Sequence[BoughtInProduct]:
     """Получает из БД набор данных по покупным деталям."""
     query = (
-        select(BoughtInProduct).
-        join(Unit).
-        join(ProductLink)
+        select(BoughtInProduct)
+        .options(
+            joinedload(BoughtInProduct.unit),
+            selectinload(BoughtInProduct.links_for_product)
+        )
     )
-    product_list = await session.execute(query)
-    return product_list.scalars().unique().all()
+    product_list = await session.scalars(query)
+    return product_list

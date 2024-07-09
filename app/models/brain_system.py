@@ -15,10 +15,10 @@ class BoughtInProduct(Base):
     comment: Mapped[str | None] = mapped_column(String(512))
 
     unit: Mapped[Optional['Unit']] = relationship(
-        back_populates='bought_in_products', lazy='joined'
+        back_populates='bought_in_products'
     )
     links_for_product: Mapped[List['ProductLink']] = relationship(
-        back_populates='bought_in_product', lazy='joined'
+        back_populates='bought_in_product'
     )
 
     def __str__(self):

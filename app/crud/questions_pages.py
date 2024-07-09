@@ -33,12 +33,9 @@ async def get_max_question_sets(
                     Question.question_type == question_type
                 )
             )
-        www_count = await session.execute(get_local_query('Ч'))
-        MAX_SET_WWW = www_count.scalar_one()
-        brain_count = await session.execute(get_local_query('Б'))
-        MAX_SET_BRAIN = brain_count.scalar_one()
-        jeopardy_count = await session.execute(get_local_query('Я'))
-        MAX_SET_JEOPARDY = jeopardy_count.scalar_one()
+        MAX_SET_WWW = await session.scalar(get_local_query('Ч'))
+        MAX_SET_BRAIN = await session.scalar(get_local_query('Б'))
+        MAX_SET_JEOPARDY = await session.scalar(get_local_query('Я'))
         LAST_REFRESH = datetime.now(timezone.utc)
     return {
         'Ч': MAX_SET_WWW,
