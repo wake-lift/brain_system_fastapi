@@ -10,7 +10,7 @@ class Feedback(Base):
     полученных через форму обратной связи."""
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(128))
-    email: Mapped[str] = mapped_column(String(150))
+    email: Mapped[str | None] = mapped_column(String(150))
     feedback_text: Mapped[str] = mapped_column(Text())
     date: Mapped[datetime] = mapped_column(
         DateTime(), default=datetime.now(timezone.utc)

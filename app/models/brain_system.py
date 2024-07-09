@@ -45,7 +45,7 @@ class ProductLink(Base):
         ForeignKey('boughtinproduct.id')
     )
     link: Mapped[str | None] = mapped_column(String(300))
-    link_short_name: Mapped[str: None] = mapped_column(String(128))
+    link_short_name: Mapped[str | None] = mapped_column(String(128))
 
     bought_in_product: Mapped[Optional['BoughtInProduct']] = relationship(
         back_populates='links_for_product'

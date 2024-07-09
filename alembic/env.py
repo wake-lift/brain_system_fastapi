@@ -1,8 +1,6 @@
 import asyncio
-import os
 from logging.config import fileConfig
 
-from dotenv import load_dotenv
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
@@ -10,17 +8,21 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from app.core.base import Base
+from app.core.config import settings
 
-load_dotenv('.env')
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-if os.environ['DATABASE_TYPE'] == 'sqlite':
-    config.set_main_option('sqlalchemy.url', os.environ['SQLITE_DATABASE_URL'])
-if os.environ['DATABASE_TYPE'] == 'postgres':
-    from app.core.db import postgres_database_url
-    config.set_main_option('sqlalchemy.url', postgres_database_url)
+if settings.database_type == 'sqlite':
+    config.set_main_option('sqlalchemy.url', settings.async_sqlite_url)
+if settings.database_type == 'postgres':
+    postgres_url = (
+        'postgresql+asyncpg' + f'://{settings.postgres_user}:'
+        f'{settings.postgres_password}@{settings.postgres_db_host}:'
+        f'{settings.postgres_db_port}/{settings.postgres_db}'
+    )
+    config.set_main_option('sqlalchemy.url', postgres_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
