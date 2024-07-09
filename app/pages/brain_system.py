@@ -61,7 +61,7 @@ async def bought(
     )
 
 
-@router.get('/export_model_to_ods/')
+@router.get('/export-model-to-ods/')
 @limiter.limit(const.EXPORT_MODEL_TO_ODS_THROTTLING_RATE)
 async def export_model_to_ods(
     request: Request,

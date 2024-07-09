@@ -5,7 +5,7 @@ from httpx import AsyncClient
 @pytest.mark.asyncio
 async def test_add_question_allowed_for_auth_user_only(
     non_authenticated_api_client: AsyncClient
-):
+) -> None:
     """
     Тест недоступности энедпойнта для неавторизованного пользователя.
     """
@@ -19,7 +19,7 @@ async def test_add_question_allowed_for_auth_user_only(
 @pytest.mark.asyncio
 async def test_update_delete_question_allowed_for_auth_user_only(
     non_authenticated_api_client: AsyncClient
-):
+) -> None:
     """
     Тест недоступности энедпойнта для неавторизованного пользователя.
     """
@@ -35,7 +35,7 @@ async def test_update_delete_question_allowed_for_auth_user_only(
 @pytest.mark.asyncio
 async def test_users_questions_allowed_for_auth_only(
     non_authenticated_api_client: AsyncClient
-):
+) -> None:
     """
     Тест недоступности энедпойнта для неавторизованного пользователя.
     """
@@ -50,7 +50,7 @@ async def test_users_questions_allowed_for_auth_only(
 async def test_edit_question_status_allowed_for_superuser_only(
     regular_user_api_client: AsyncClient,
     non_authenticated_api_client: AsyncClient
-):
+) -> None:
     """
     Тест недоступности энедпойнта для любого пользователя
     кроме авминистратора.

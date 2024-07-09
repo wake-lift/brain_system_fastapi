@@ -7,10 +7,10 @@ from tests.conftest import async_session_factory_test
 
 
 @pytest.mark.asyncio
-async def test_random_package(non_authenticated_api_client: AsyncClient):
-    """
-    Тестирование логики генерации случайного пакета вопросов.
-    """
+async def test_random_package(
+    non_authenticated_api_client: AsyncClient
+) -> None:
+    """Тестирование логики генерации случайного пакета вопросов."""
     url = '/questions/random-package'
     response = await non_authenticated_api_client.post(url, json={})
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
@@ -25,10 +25,10 @@ async def test_random_package(non_authenticated_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_random_questions(non_authenticated_api_client: AsyncClient):
-    """
-    Тестирование логики генерации случайного набора вопросов.
-    """
+async def test_random_questions(
+    non_authenticated_api_client: AsyncClient
+) -> None:
+    """Тестирование логики генерации случайного набора вопросов."""
     url = '/questions/random-questions'
     response = await non_authenticated_api_client.post(
         url,
@@ -51,10 +51,10 @@ async def test_random_questions(non_authenticated_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_questions_search(non_authenticated_api_client: AsyncClient):
-    """
-    Тестирование поиска по текста вопроса.
-    """
+async def test_questions_search(
+    non_authenticated_api_client: AsyncClient
+) -> None:
+    """Тестирование поиска по текста вопроса."""
     url = '/questions/search'
     response = await non_authenticated_api_client.post(
         url,
@@ -69,30 +69,27 @@ async def test_questions_search(non_authenticated_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_question_add(regular_user_api_client: AsyncClient):
+async def test_question_add(regular_user_api_client: AsyncClient) -> None:
+    """Тестирование добавления вопроса в БД."""
     url = '/questions/add'
     request_body = {
         "question_type": "Что-где-когда",
         "question": "Текст вопроса (не менее 30-ти символов).",
         "answer": "Ответ на вопрос",
     }
-    """
-    Тестирование добавления вопроса в БД.
-    """
     response = await regular_user_api_client.post(url, json=request_body)
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
     assert response.status_code == 200, msg
     async with async_session_factory_test() as session:
-        questions_count = await session.execute(
+        questions_count = await session.scalar(
             select(func.count()).select_from(Question)
         )
-        added_item = await session.execute(
+        added_item = await session.scalar(
             select(Question).order_by(Question.id.desc())
         )
-        added_item = added_item.scalars().first()
     msg = (f'Добавление нового вопроса (эндпойнт "{url}") не увеличивает'
            ' количество вопросов в БД.')
-    assert questions_count.scalars().first() == 31, msg
+    assert questions_count == 31, msg
     msg = (f'Добавленный вопрос (эндпойнт "{url}") не устанавливает'
            'правильную связь с моделью "User" (поле user_id).')
     assert added_item.user_id == 1, msg
@@ -107,10 +104,8 @@ async def test_question_add(regular_user_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_question_get(non_authenticated_api_client: AsyncClient):
-    """
-    Тестирование выдачи отдельного вопроса.
-    """
+async def test_question_get(non_authenticated_api_client: AsyncClient) -> None:
+    """Тестирование выдачи отдельного вопроса."""
     url = '/questions/10'
     response = await non_authenticated_api_client.get(url)
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
@@ -121,10 +116,8 @@ async def test_question_get(non_authenticated_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_question_edit(regular_user_api_client: AsyncClient):
-    """
-    Тестирование выдачи отдельного вопроса.
-    """
+async def test_question_edit(regular_user_api_client: AsyncClient) -> None:
+    """Тестирование выдачи отдельного вопроса."""
     url = '/questions/5'
     request_body = {
         "answer": "Ответ на вопрос (измененный)",
@@ -133,10 +126,9 @@ async def test_question_edit(regular_user_api_client: AsyncClient):
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
     assert response.status_code == 200, msg
     async with async_session_factory_test() as session:
-        modified_question = await session.execute(
+        modified_question = await session.scalar(
             select(Question).filter(Question.id == 5)
         )
-        modified_question = modified_question.scalars().first()
     msg = (f'Изменение вопроса ("{url}") не приводит к изменению '
            'информации в БД.')
     assert modified_question.answer == 'Ответ на вопрос (измененный)', msg
@@ -148,10 +140,8 @@ async def test_question_edit(regular_user_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_question_delete(regular_user_api_client: AsyncClient):
-    """
-    Тестирование удаления вопроса.
-    """
+async def test_question_delete(regular_user_api_client: AsyncClient) -> None:
+    """Тестирование удаления вопроса."""
     async with async_session_factory_test() as session:
         await session.execute(
             insert(Question).values({
@@ -172,19 +162,16 @@ async def test_question_delete(regular_user_api_client: AsyncClient):
            'отличный от 200.')
     assert response.status_code == 200, msg
     async with async_session_factory_test() as session:
-        questions_count = await session.execute(
+        questions_count = await session.scalar(
             select(func.count()).select_from(Question)
         )
-    questions_count = questions_count.scalars().first()
     msg = 'Удаление записи не приводит к уменьшению количества записей в БД.'
     assert questions_count == 30, msg
 
 
 @pytest.mark.asyncio
-async def test_question_status_edit(superuser_api_client: AsyncClient):
-    """
-    Тестирование редактирования статуса вопроса.
-    """
+async def test_question_status_edit(superuser_api_client: AsyncClient) -> None:
+    """Тестирование редактирования статуса вопроса."""
     url = '/questions/30/status'
     request_body = {
         "is_condemned": True,
@@ -195,11 +182,10 @@ async def test_question_status_edit(superuser_api_client: AsyncClient):
            'отличный от 200.')
     assert response.status_code == 200, msg
     async with async_session_factory_test() as session:
-        question_statuses = await session.execute(
+        question_statuses = await session.scalar(
             select(Question)
             .filter(Question.id == 30)
         )
-    question_statuses = question_statuses.scalars().first()
     msg = ('Редактирование статуса вопроса не приводит к изменеию полей'
            '"is_condemned" или "is_published" в БД.')
     assert question_statuses.is_condemned is True, msg
@@ -207,7 +193,7 @@ async def test_question_status_edit(superuser_api_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_users_questions(regular_user_api_client: AsyncClient):
+async def test_users_questions(regular_user_api_client: AsyncClient) -> None:
     """
     Тестирование выдачи всех записей, принадлежащих пользователю,
     отправившему запрос.
@@ -221,10 +207,9 @@ async def test_users_questions(regular_user_api_client: AsyncClient):
     assert len(response.json()) == 15, msg
     question_id_set = {_['id'] for _ in response.json()}
     async with async_session_factory_test() as session:
-        users_questions = await session.execute(
+        users_questions = await session.scalars(
             select(Question)
             .filter(or_(Question.id == _ for _ in question_id_set)))
-    users_questions = users_questions.scalars().all()
     user_id_set = {_.user_id for _ in users_questions}
     msg = (f'Выборка вопросов, получаемая при запросе к эндпойнту "{url}", '
            'должна содержать только записи, автором которых является '

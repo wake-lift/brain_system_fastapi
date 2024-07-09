@@ -20,9 +20,13 @@ mock.patch(
     'fastapi_cache.decorator.cache',
     lambda *args, **kwargs: lambda f: f
 ).start()
-from app.main import app_api # noqa (приложение должно быть импортировано после подмены декоратора кэширования)
+# приложения должны быть импортированы после подмены декоратора кэширования
+from app.main import app_api # noqa
+from app.main import app_pages # noqa
 
 DATABASE_URL_TEST: str = 'sqlite+aiosqlite:///db_test.sqlite'
+
+app_pages.user_middleware = []
 
 
 @pytest_asyncio.fixture(scope='session')
@@ -57,6 +61,7 @@ async def get_async_session_test() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 app_api.dependency_overrides[get_async_session] = get_async_session_test
+app_pages.dependency_overrides[get_async_session] = get_async_session_test
 
 
 @pytest_asyncio.fixture(autouse=True, scope='session')
@@ -83,7 +88,6 @@ async def get_test_database() -> AsyncGenerator[None, None]:
     finally:
         async with async_engine_test.begin() as aconn:
             await aconn.run_sync(Base.metadata.drop_all)
-    # finally: pass
 
 
 def gen_data_for_user_table() -> List[dict]:
@@ -112,7 +116,9 @@ def gen_data_for_question_table() -> List[dict]:
         res.append({
             'id': i,
             'package': 'package_1' if i % 2 else 'package_2',
-            'question_type': 'Ч' if i == 1 else choice(['Ч', 'Б', 'Я']),
+            'question_type': (
+                'Ч' if i == 1 or i == 28 else choice(['Ч', 'Б', 'Я'])
+            ),
             'question': f'Текст вопроса_{i}',
             'answer': f'Ответ на вопрос {i}',
             'is_condemned': False,
@@ -138,10 +144,17 @@ def gen_data_for_brain_tables() -> Tuple[List[dict]]:
         res_productlink.append(
             {'id': i,
              'link': f'Ссылка_{i}',
-             'link_short_name': f'Короткое имя_{i}',
+             'link_short_name': f'Короткое_имя_{i}',
              'bought_in_product_id': randint(1, 30)}
         )
     return res_unit, res_boughtinproduct, res_productlink
+
+
+@pytest_asyncio.fixture()
+async def pages_client() -> AsyncGenerator[AsyncClient, None]:
+    """Создает генератор сессий для страниц сайта."""
+    async with AsyncClient(app=app_pages, base_url='http://test') as ac:
+        yield ac
 
 
 @pytest_asyncio.fixture()
@@ -166,6 +179,7 @@ async def regular_user_api_client() -> AsyncGenerator[AsyncClient, None]:
     app_api.dependency_overrides[current_user] = lambda: regular_user
     async with AsyncClient(app=app_api, base_url='http://test') as ac:
         yield ac
+    app_api.dependency_overrides[current_user] = current_user
 
 
 @pytest_asyncio.fixture()
@@ -183,3 +197,4 @@ async def superuser_api_client() -> AsyncGenerator[AsyncClient, None]:
     app_api.dependency_overrides[current_superuser] = lambda: superuser
     async with AsyncClient(app=app_api, base_url='http://test') as ac:
         yield ac
+    app_api.dependency_overrides[current_superuser] = current_superuser
