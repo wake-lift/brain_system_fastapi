@@ -5,10 +5,10 @@ from unittest import mock
 
 from httpx import AsyncClient
 import pytest_asyncio
-from sqlalchemy import NullPool, create_engine, insert
+from sqlalchemy import insert
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from app.core.db import get_async_session, Base
 from app.core.users import current_superuser, current_user
@@ -24,7 +24,7 @@ mock.patch(
 from app.main import app_api # noqa
 from app.main import app_pages # noqa
 
-DATABASE_URL_TEST: str = 'sqlite+aiosqlite:///db_test.sqlite'
+DATABASE_URL_TEST: str = 'sqlite+aiosqlite:///file::memory:?cache=shared'
 
 app_pages.user_middleware = []
 
@@ -40,17 +40,13 @@ def event_loop() -> Generator[asyncio.AbstractEventLoop, None, None]:
     loop.close()
 
 
-sync_engine_test = create_engine(
-    DATABASE_URL_TEST,
-    poolclass=NullPool,
-)
 async_engine_test = create_async_engine(
     DATABASE_URL_TEST,
-    poolclass=NullPool,
+    connect_args={'check_same_thread': False},
+    poolclass=StaticPool
 )
 
 async_session_factory_test = async_sessionmaker(async_engine_test)
-sync_session_factory_test = sessionmaker(sync_engine_test)
 
 
 async def get_async_session_test() -> AsyncGenerator[AsyncSession, None]:
