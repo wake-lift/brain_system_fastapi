@@ -81,7 +81,7 @@ async def random_package(
     )
 
 
-@router.get('/telegram-bot/')
+@router.api_route('/telegram-bot/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def tg_bot(request: Request):
     return templates.TemplateResponse(
@@ -89,7 +89,7 @@ async def tg_bot(request: Request):
     )
 
 
-@router.get('/api/')
+@router.api_route('/api/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def api_info(request: Request):
     return templates.TemplateResponse(

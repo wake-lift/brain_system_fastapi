@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/operating-principle/')
+@router.api_route('/operating-principle/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def operating(request: Request):
     return templates.TemplateResponse(
@@ -23,7 +23,7 @@ async def operating(request: Request):
     )
 
 
-@router.get('/electric-schematics/')
+@router.api_route('/electric-schematics/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def circuit(request: Request):
     return templates.TemplateResponse(
@@ -31,7 +31,7 @@ async def circuit(request: Request):
     )
 
 
-@router.get('/pcb/')
+@router.api_route('/pcb/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def pcb(request: Request):
     return templates.TemplateResponse(
@@ -39,7 +39,7 @@ async def pcb(request: Request):
     )
 
 
-@router.get('/printed-parts/')
+@router.api_route('/printed-parts/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def printed(request: Request):
     return templates.TemplateResponse(
@@ -47,7 +47,7 @@ async def printed(request: Request):
     )
 
 
-@router.get('/bought-in-products/')
+@router.api_route('/bought-in-products/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def bought(
     request: Request,
@@ -75,7 +75,7 @@ async def export_model_to_ods(
     return StreamingResponse(output, headers=headers)
 
 
-@router.get('/firmware/')
+@router.api_route('/firmware/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def firmware(request: Request):
     return templates.TemplateResponse(

@@ -6,6 +6,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette_wtf import CSRFProtectMiddleware
 
+from app.api.common_endpoints import router as common_endpints_router
 from app.api.questions import router as api_questions_router
 from app.api.users import router as users_router
 from app.core.config import settings, lifespan, limiter
@@ -25,6 +26,7 @@ app_api.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app_api.include_router(api_questions_router)
 app_api.include_router(users_router)
+app_api.include_router(common_endpints_router)
 
 
 app_pages = FastAPI(

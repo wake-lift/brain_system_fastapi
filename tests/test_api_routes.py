@@ -3,6 +3,27 @@ from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
+async def test_root_endpoint_available(
+    non_authenticated_api_client: AsyncClient
+) -> None:
+    """
+    Тест доступности главной страницы API для неавторизованного пользователя.
+    """
+    url = '/'
+    response = await non_authenticated_api_client.get(url)
+    msg = (f'Обращение к эндпойнту "{url}" от анонимного пользователя'
+           ' не возвращает статус 200.')
+    assert response.status_code == 200, msg
+    msg = (f'Обращение к эндпойнту "{url}" от анонимного пользователя'
+           ' не возвращает ожидаемого json-ответа.')
+    assert response.json() == {
+        'message': 'Welcome to BrainAPI!',
+        'Swagger url': '/docs/',
+        'ReDoc url': '/redoc/'
+    }, msg
+
+
+@pytest.mark.asyncio
 async def test_add_question_allowed_for_auth_user_only(
     non_authenticated_api_client: AsyncClient
 ) -> None:

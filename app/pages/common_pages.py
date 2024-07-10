@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.get('/')
+@router.api_route('/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def index(request: Request):
     return templates.TemplateResponse(
@@ -23,7 +23,7 @@ async def index(request: Request):
     )
 
 
-@router.get('/legal/')
+@router.api_route('/legal/', methods=['GET', 'HEAD'])
 @limiter.limit(const.BASE_THROTTLING_RATE)
 async def legal(request: Request):
     return templates.TemplateResponse(
@@ -33,8 +33,7 @@ async def legal(request: Request):
 
 
 @csrf_protect
-@router.get('/feedback/')
-@router.post('/feedback/')
+@router.api_route('/feedback/', methods=['GET', 'HEAD', 'POST'])
 @limiter.limit(const.FEEDBACK_THROTTLING_RATE)
 async def feedback(
     request: Request,
