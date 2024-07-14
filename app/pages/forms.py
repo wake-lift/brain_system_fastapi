@@ -1,6 +1,6 @@
 from starlette_wtf import StarletteForm
 from wtforms import (EmailField, IntegerField, RadioField, StringField,
-                     SubmitField, TextAreaField)
+                     SubmitField, TextAreaField, ValidationError)
 from wtforms.validators import (DataRequired, Email, Length, NumberRange,
                                 Optional)
 
@@ -35,7 +35,7 @@ class FeedbackForm(StarletteForm):
 
 class RandomQuestionForm(StarletteForm):
     CHOICES = [
-        ('Ч', 'Что-Где-Когда'),
+        ('Ч', 'Что-где-когда'),
         ('Б', 'Брейн-ринг'),
         ('Я', 'Своя игра'),
     ]
@@ -45,7 +45,12 @@ class RandomQuestionForm(StarletteForm):
         default='Ч',
     )
     search_pattern = StringField(
-        label='Поиск по тексту вопроса:',
+        label='Поиск по тексту вопроса (строгий):',
+        description=f'Не менее {MIN_SEARCH_PATTERN_LENGTH} символов',
+        validators=[Length(min=MIN_SEARCH_PATTERN_LENGTH), Optional()],
+    )
+    full_text_search_pattern = StringField(
+        label='Поиск по тексту вопроса (нестрогий):',
         description=f'Не менее {MIN_SEARCH_PATTERN_LENGTH} символов',
         validators=[Length(min=MIN_SEARCH_PATTERN_LENGTH), Optional()],
     )
@@ -57,6 +62,11 @@ class RandomQuestionForm(StarletteForm):
                     NumberRange(min=1, max=MAX_QUESTIONS_QUANTITY)],
     )
     submit = SubmitField(label='Отправить')
+
+    def validate_search_pattern(self, field):
+        if field.data and self.full_text_search_pattern.data:
+            raise ValidationError('Заполните только одно из полей поиска или'
+                                  ' оставьте оба поля пустыми.')
 
 
 class RandomPackageForm(StarletteForm):

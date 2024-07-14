@@ -29,6 +29,13 @@
             {% for error in form.search_pattern.errors %}<span style="color: red" class="adaptive-fs-small">{{ error }}</span>{% endfor %}
           {% endif %}
         </p>
+        {{ form.full_text_search_pattern.label }}
+        {{ form.full_text_search_pattern(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.full_text_search_pattern.description) }}
+        <p>
+          {% if form.full_text_search_pattern.errors %}
+            {% for error in form.full_text_search_pattern.errors %}<span style="color: red" class="adaptive-fs-small">{{ error }}</span>{% endfor %}
+          {% endif %}
+        </p>
         <br>
         {{ form.questions_quantity.label }}
         {{ form.questions_quantity(class="form-control form-control-lg py-3 mb-3 adaptive-fs", placeholder=form.questions_quantity.description) }}

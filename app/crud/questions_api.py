@@ -1,13 +1,13 @@
 from datetime import datetime, timezone
 import random
-from fastapi import Depends, HTTPException
+from fastapi import HTTPException
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import Select, false, func, select, true
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.constants import REFRESH_INTERVAL, SET_FOR_RANDOMIZING
-from app.core.db import get_async_session, sync_session_factory
+from app.core.db import sync_session_factory
 from app.models.questions import Question
 from app.models.users import User
 from app.schemas.questions import QuestionCreate
@@ -168,7 +168,7 @@ async def create_question(
 async def edit_question(
     question: Question,
     update_data: BaseModel,
-    session: AsyncSession = Depends(get_async_session),
+    session: AsyncSession,
 ) -> Question:
     """Модифицирует вопрос в Базе."""
     initial_data = jsonable_encoder(question)
