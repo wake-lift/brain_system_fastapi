@@ -195,3 +195,19 @@ def get_unpublished_questions_num() -> int:
             select(func.count()).filter(Question.is_published == false())
         )
     return questions_num.scalars().first()
+
+
+async def get_questions_by_list_order(
+        pk_list: list[int],
+        session: AsyncSession,
+) -> list[Question]:
+    """
+    Получает набор вопросов, соответствующий переданному списку первичных
+    ключей, и сортирует этот набор согласно порядку следования ключей в списке.
+    """
+    questions = await session.execute(
+        select(Question)
+        .where(Question.id.in_(pk_list))
+    )
+    questions = questions.scalars().all()
+    return [next(_ for _ in questions if _.id == pk) for pk in pk_list]

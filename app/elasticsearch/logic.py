@@ -1,3 +1,4 @@
+from elastic_transport import ObjectApiResponse
 from elasticsearch import (Elasticsearch, BadRequestError, helpers,
                            NotFoundError)
 from sqlalchemy import desc, false, select, true
@@ -8,6 +9,7 @@ from app.models.questions import Question
 
 
 class ElasticSerchBase():
+    """Базовый класс для работы с индексом Elasticsearch."""
 
     def __init__(
             self,
@@ -28,6 +30,7 @@ class ElasticSerchBase():
             mapping: dict = dsl.QUESTION_INDEX_MAPPING,
             settings: dict = dsl.QUESTION_INDEX_SETTINGS
     ) -> dict | str:
+        """Создание нового индекса."""
         try:
             idx = self.es_client.indices.create(
                 index=self.index,
@@ -41,6 +44,7 @@ class ElasticSerchBase():
         return idx.body
 
     def delete_index(self) -> dict | str:
+        """Удаление индекса."""
         try:
             idx = self.es_client.indices.delete(index=self.index)
         except (BadRequestError, NotFoundError) as err:
@@ -50,6 +54,7 @@ class ElasticSerchBase():
         return idx.body
 
     def remove_all_docs_from_index(self) -> None:
+        """Удаление всех документов из индекса."""
         try:
             self.es_client.delete_by_query(
                 index=self.index, body=dsl.GET_ALL_DOCS_IN_INDEX
@@ -59,9 +64,14 @@ class ElasticSerchBase():
 
 
 class ElasticSerchQuestion(ElasticSerchBase):
+    """Класс для работы с индексом вопросов для интеллектуальных игр."""
 
     @staticmethod
     def __prepare_questions(right_idx: int, left_idx: int) -> list[dict]:
+        """
+        Выбирает из БД вопросы, соответствующие переданному диапазону первичных
+        ключей, и приводит их в готовый для экспорта в индекс вид.
+        """
         question_list = []
         with sync_session_factory() as session:
             questions = session.execute(
@@ -79,7 +89,10 @@ class ElasticSerchQuestion(ElasticSerchBase):
                 'question': question.question})
         return question_list
 
-    def export_data_from_db_to_index(self):
+    def export_data_from_db_to_index(self) -> None:
+        """
+        Экспортирует содержимое БД в индекс в несколько итераций.
+        """
         with sync_session_factory() as session:
             last_question_id = session.scalar(
                 select(Question.id)
@@ -102,3 +115,25 @@ class ElasticSerchQuestion(ElasticSerchBase):
                 print((f'При экспорте данных произошла ошибка: {err}.'
                        'Выполнена очистка индекса.'))
                 break
+
+    def search_questions(
+            self,
+            search_pattern: str,
+            search_type: str,
+            quantity: int,
+            question_type: str = None
+    ) -> ObjectApiResponse:
+        """Поиск вопросов в индексе."""
+        body = dsl.get_searh_query(search_pattern, search_type, question_type)
+        return self.es_client.search(
+            index=self.index, size=quantity, body=body
+        )
+
+    def get_questions_pk_list(
+            self, search_result: ObjectApiResponse
+    ) -> list[int]:
+        """
+        Возвращает список первичных ключей записей
+        на основании результата поиска в индексе.
+        """
+        return [_['_source']['pk'] for _ in search_result.body['hits']['hits']]

@@ -14,13 +14,16 @@ from app.core.config import limiter
 from app.core.users import current_superuser, current_user
 from app.crud.questions_api import (create_question, edit_question,
                                     get_initial_query, get_question_or_404,
+                                    get_questions_by_list_order,
                                     get_random_package,
                                     get_valid_question_or_404)
+from app.elasticsearch.logic import ElasticSerchQuestion
 from app.models.questions import Question, QuestionType
 from app.models.users import User
 from app.schemas.questions import (EmailForSendingPackage, QuestionCreate,
                                    QuestionDB, QuestionDBWithStatus,
-                                   QuestionStatusUpdate, QuestionUpdate)
+                                   QuestionStatusUpdate, QuestionUpdate,
+                                   SearchType)
 from app.tasks.questions import send_email
 
 router = APIRouter(
@@ -136,6 +139,49 @@ async def search_questions(
         questions_list, _ = get_package_questions_list(questions)
         for addr in email_addresses.email:
             send_email.delay(addr, questions_list)
+    return questions
+
+
+@router.get(
+    '/full-text-search',
+    response_model=list[QuestionDB],
+    response_model_exclude_none=True,
+    summary='Полнотекстовый и нечеткий поиск по тексту вопросов.'
+)
+@limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
+async def elastic_search_questions(
+    *,
+    request: Request,
+    search_pattern: str = Query(
+        ...,
+        min_length=const.MIN_SEARCH_PATTERN_LENGTH
+    ),
+    search_type: SearchType = Query(
+        description=('Тип поиска. Имеется возможность выбора между полнотекс'
+                     'товым поиском и поиском по нечеткому совпадению.')
+    ),
+    question_type: QuestionType | SkipJsonSchema[None] = Query(
+        default=None,
+        description=('Тип вопросов. Если оставить поле пустым - '
+                     'будут выбраны вопросы случайных категорий.')
+    ),
+    quantity: int = Query(
+        default=const.DEFAULT_QUESTIONS_QUANTITY,
+        ge=1,
+        le=const.MAX_QUESTIONS_QUANTITY,
+        description='Количество вопросов в выдаче.'),
+    session: AsyncSession = Depends(get_async_session)
+):
+    """
+    Полнотекстовый поиск по тексту вопросов.
+    Можно указать количество вопросов в выдаче и тип поиска.
+    """
+    es = ElasticSerchQuestion()
+    search_result = es.search_questions(
+        search_pattern, search_type, quantity, question_type
+    )
+    question_pk_list = es.get_questions_pk_list(search_result)
+    questions = await get_questions_by_list_order(question_pk_list, session)
     return questions
 
 
