@@ -39,6 +39,8 @@ class Settings(BaseSettings):
     smtp_host: str
     smtp_port: str
     smtp_host_user: str
+    elasticsearch_host: str
+    elasticsearch_port: str
 
 
 settings = Settings()

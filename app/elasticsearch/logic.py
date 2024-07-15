@@ -3,6 +3,7 @@ from elasticsearch import (Elasticsearch, BadRequestError, helpers,
                            NotFoundError)
 from sqlalchemy import desc, false, select, true
 
+from app.core.config import settings
 from app.core.db import sync_session_factory
 from app.elasticsearch import dsl_queries as dsl
 from app.models.questions import Question
@@ -13,8 +14,8 @@ class ElasticSerchBase():
 
     def __init__(
             self,
-            host: str = 'localhost',
-            port: str = '9200',
+            host: str = settings.elasticsearch_host,
+            port: str = settings.elasticsearch_port,
             index: str = 'question_index'
     ) -> None:
         self.es_client: Elasticsearch = Elasticsearch(
