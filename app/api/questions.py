@@ -246,7 +246,7 @@ async def modify_question(
     """
     question = await get_question_or_404(id, session)
     check_superuser_or_user_who_added(question, user)
-    question = await edit_question(question, modified_question, session)
+    question = await edit_question(question, modified_question, user, session)
     return question
 
 
@@ -271,7 +271,7 @@ async def modify_question_status(
     угловые скобки, ссылки на отсутствующие внешние изображения и т.п.
     """
     question = await get_question_or_404(id, session)
-    question = await edit_question(question, modified_status, session)
+    question = await edit_question(question, modified_status, user, session)
     return question
 
 

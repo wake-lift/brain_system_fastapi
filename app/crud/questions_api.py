@@ -168,6 +168,7 @@ async def create_question(
 async def edit_question(
     question: Question,
     update_data: BaseModel,
+    user: User,
     session: AsyncSession,
 ) -> Question:
     """Модифицирует вопрос в Базе."""
@@ -179,6 +180,12 @@ async def edit_question(
                 question,
                 field,
                 update_data[field] if update_data[field] != '' else None
+            )
+    if not user.is_superuser:
+        setattr(
+                question,
+                'is_published',
+                False
             )
     session.add(question)
     await session.commit()
