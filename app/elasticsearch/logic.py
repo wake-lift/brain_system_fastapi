@@ -9,7 +9,7 @@ from app.elasticsearch import dsl_queries as dsl
 from app.models.questions import Question
 
 
-class ElasticSerchBase():
+class ElasticSearchBase():
     """Базовый класс для работы с индексом Elasticsearch."""
 
     def __init__(
@@ -64,7 +64,7 @@ class ElasticSerchBase():
             print(f'При удалении данных произошла ошибка: {err}.')
 
 
-class ElasticSerchQuestion(ElasticSerchBase):
+class ElasticSearchQuestion(ElasticSearchBase):
     """Класс для работы с индексом вопросов для интеллектуальных игр."""
 
     @staticmethod
@@ -105,7 +105,7 @@ class ElasticSerchQuestion(ElasticSerchBase):
         self.remove_all_docs_from_index()
         for i in range(len(upload_intervals) - 1):
             try:
-                uploaded_questions = ElasticSerchQuestion.__prepare_questions(
+                uploaded_questions = ElasticSearchQuestion.__prepare_questions(
                     upload_intervals[i], upload_intervals[i + 1]
                 )
                 helpers.bulk(
@@ -137,3 +137,30 @@ class ElasticSerchQuestion(ElasticSerchBase):
         на основании результата поиска в индексе.
         """
         return [_['_source']['pk'] for _ in search_result.body['hits']['hits']]
+
+    def add_or_update_question_in_index(self, question: Question) -> None:
+        """Обновляет документ в индексе или добавляет в индекс новый вопрос."""
+        question_export_data = {
+            'pk': question.id,
+            'question_type': question.question_type.value,
+            'question': question.question
+        }
+        question_doc = self.es_client.search(
+            index=self.index, body={'query': {'match': {'pk': question.id}}}
+        )
+        if not question_doc.body['hits']['hits']:
+            question_doc_id = None
+        else:
+            question_doc_id = question_doc.body['hits']['hits'][0]['_id']
+        self.es_client.index(
+            index=self.index, id=question_doc_id, document=question_export_data
+        )
+
+    def delete_question_from_index(self, question: Question) -> None:
+        """Удаляет вопрос из индекса, если он с нем присутствует."""
+        question_doc = self.es_client.search(
+            index=self.index, body={'query': {'match': {'pk': question.id}}}
+        )
+        if question_doc.body['hits']['hits']:
+            question_doc_id = question_doc.body['hits']['hits'][0]['_id']
+            self.es_client.delete(index=self.index, id=question_doc_id)

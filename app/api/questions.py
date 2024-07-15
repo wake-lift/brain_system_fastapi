@@ -17,7 +17,7 @@ from app.crud.questions_api import (create_question, edit_question,
                                     get_questions_by_list_order,
                                     get_random_package,
                                     get_valid_question_or_404)
-from app.elasticsearch.logic import ElasticSerchQuestion
+from app.elasticsearch.logic import ElasticSearchQuestion
 from app.models.questions import Question, QuestionType
 from app.models.users import User
 from app.schemas.questions import (EmailForSendingPackage, QuestionCreate,
@@ -171,7 +171,7 @@ async def elastic_search_questions(
     Полнотекстовый поиск по тексту вопросов.
     Можно указать количество вопросов в выдаче и тип поиска.
     """
-    es = ElasticSerchQuestion()
+    es = ElasticSearchQuestion()
     search_result = es.search_questions(
         search_pattern, quantity, question_type
     )
@@ -247,6 +247,8 @@ async def modify_question(
     question = await get_question_or_404(id, session)
     check_superuser_or_user_who_added(question, user)
     question = await edit_question(question, modified_question, user, session)
+    es = ElasticSearchQuestion()
+    es.delete_question_from_index(question)
     return question
 
 
@@ -272,6 +274,11 @@ async def modify_question_status(
     """
     question = await get_question_or_404(id, session)
     question = await edit_question(question, modified_status, user, session)
+    es = ElasticSearchQuestion()
+    if question.is_published:
+        es.add_or_update_question_in_index(question)
+    else:
+        es.delete_question_from_index(question)
     return question
 
 
@@ -294,4 +301,6 @@ async def delete_question(
     check_superuser_or_user_who_added(question, user)
     await session.delete(question)
     await session.commit()
+    es = ElasticSearchQuestion()
+    es.delete_question_from_index(question)
     return {'message': f'Вопрос с id = {id} удален из Базы.'}

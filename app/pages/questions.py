@@ -11,7 +11,7 @@ from app.crud.questions_api import get_questions_by_list_order
 from app.crud.questions_pages import (get_base_query,
                                       get_initial_random_question_set,
                                       get_random_package)
-from app.elasticsearch.logic import ElasticSerchQuestion
+from app.elasticsearch.logic import ElasticSearchQuestion
 from app.models.questions import Question
 from app.pages.forms import RandomPackageForm, RandomQuestionForm
 
@@ -36,7 +36,7 @@ async def random_questions(
         if await form.validate_on_submit():
             context['form_is_valid'] = True
             if form.full_text_search_pattern.data:
-                es = ElasticSerchQuestion()
+                es = ElasticSearchQuestion()
                 search_result = es.search_questions(
                     form.full_text_search_pattern.data,
                     form.questions_quantity.data,
