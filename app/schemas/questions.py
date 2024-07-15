@@ -1,15 +1,8 @@
-import enum
 from typing import List
 from pydantic import BaseModel, EmailStr, Field
 
 from app.core.constants import MIN_QUESTION_LENGTH
 from app.models.questions import QuestionType
-
-
-class SearchType(enum.StrEnum):
-    """Перечень допустимых значений вида поиска."""
-    full_text_search = 'Полнотекстовый поиск'
-    fuzzy_search = 'Нечеткий поиск'
 
 
 class QuestionDB(BaseModel):

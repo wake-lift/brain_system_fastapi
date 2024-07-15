@@ -22,8 +22,7 @@ from app.models.questions import Question, QuestionType
 from app.models.users import User
 from app.schemas.questions import (EmailForSendingPackage, QuestionCreate,
                                    QuestionDB, QuestionDBWithStatus,
-                                   QuestionStatusUpdate, QuestionUpdate,
-                                   SearchType)
+                                   QuestionStatusUpdate, QuestionUpdate,)
 from app.tasks.questions import send_email
 
 router = APIRouter(
@@ -156,10 +155,6 @@ async def elastic_search_questions(
         ...,
         min_length=const.MIN_SEARCH_PATTERN_LENGTH
     ),
-    search_type: SearchType = Query(
-        description=('Тип поиска. Имеется возможность выбора между полнотекс'
-                     'товым поиском и поиском по нечеткому совпадению.')
-    ),
     question_type: QuestionType | SkipJsonSchema[None] = Query(
         default=None,
         description=('Тип вопросов. Если оставить поле пустым - '
@@ -178,7 +173,7 @@ async def elastic_search_questions(
     """
     es = ElasticSerchQuestion()
     search_result = es.search_questions(
-        search_pattern, search_type, quantity, question_type
+        search_pattern, quantity, question_type
     )
     question_pk_list = es.get_questions_pk_list(search_result)
     questions = await get_questions_by_list_order(question_pk_list, session)

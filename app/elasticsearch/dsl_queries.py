@@ -1,6 +1,3 @@
-from app.schemas.questions import SearchType
-
-
 QUESTION_INDEX_MAPPING: dict = {
     'properties': {
         'pk': {
@@ -45,58 +42,33 @@ GET_ALL_DOCS_IN_INDEX: dict = {
 
 def get_searh_query(
         search_pattern: str,
-        search_type: str,
         question_type: str = None
 ) -> dict:
-    if search_type == SearchType.full_text_search and not question_type:
-        return {
-            'query': {
-                'bool': {
-                    'must': [
-                        {'match': {'question': search_pattern}}
-                    ]
-                }
-            }
-        }
-    if search_type == SearchType.full_text_search and question_type:
-        return {
-            'query': {
-                'bool': {
-                    'filter': [{
-                        'term': {'question_type': question_type}
-                    }],
-                    'must': [
-                        {'match': {'question': search_pattern}},
-                    ],
-                },
-            },
-        }
-    if search_type == SearchType.fuzzy_search and not question_type:
+    if not question_type:
         return {
             'query': {
                 'match': {
                     'question': {
                         'query': search_pattern,
-                        'fuzziness': 'auto',
-                    },
-                },
-            },
+                        'fuzziness': 'auto'
+                    }
+                }
+            }
         }
-    if search_type == SearchType.fuzzy_search and question_type:
-        return {
-            'query': {
-                'bool': {
-                    'filter': [{
-                        'term': {'question_type': question_type}
-                    }],
-                    'must': {
-                        'match': {
-                            'question': {
-                                'query': search_pattern,
-                                'fuzziness': 'auto'
-                            }
+    return {
+        'query': {
+            'bool': {
+                'filter': [{
+                    'term': {'question_type': question_type}
+                }],
+                'must': {
+                    'match': {
+                        'question': {
+                            'query': search_pattern,
+                            'fuzziness': 'auto'
                         }
                     }
                 }
             }
         }
+    }

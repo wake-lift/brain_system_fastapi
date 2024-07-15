@@ -119,12 +119,11 @@ class ElasticSerchQuestion(ElasticSerchBase):
     def search_questions(
             self,
             search_pattern: str,
-            search_type: str,
             quantity: int,
             question_type: str = None
     ) -> ObjectApiResponse:
         """Поиск вопросов в индексе."""
-        body = dsl.get_searh_query(search_pattern, search_type, question_type)
+        body = dsl.get_searh_query(search_pattern, question_type)
         return self.es_client.search(
             index=self.index, size=quantity, body=body
         )

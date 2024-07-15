@@ -14,7 +14,6 @@ from app.crud.questions_pages import (get_base_query,
 from app.elasticsearch.logic import ElasticSerchQuestion
 from app.models.questions import Question
 from app.pages.forms import RandomPackageForm, RandomQuestionForm
-from app.schemas.questions import SearchType
 
 router = APIRouter(
     prefix='/questions',
@@ -40,7 +39,6 @@ async def random_questions(
                 es = ElasticSerchQuestion()
                 search_result = es.search_questions(
                     form.full_text_search_pattern.data,
-                    SearchType.full_text_search,
                     form.questions_quantity.data,
                     dict(
                         form.question_type.choices
@@ -53,7 +51,7 @@ async def random_questions(
             else:
                 if form.search_pattern.data:
                     query = get_base_query(form.question_type.data).filter(
-                        Question.question.icontains(form.search_pattern.data)
+                        Question.question.contains(form.search_pattern.data)
                     )
                     questions = await session.execute(query)
                     questions = questions.all()
