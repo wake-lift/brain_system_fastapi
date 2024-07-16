@@ -3,6 +3,7 @@ name: brain_system_prod_fastapi
 volumes:
   pg_data:
   static:
+  es_data:
 
 
 services:
@@ -23,6 +24,13 @@ services:
       - -c
       - redis-server --port "$${REDIS_PORT}" --requirepass "$${REDIS_PASSWORD}"
   
+  es:
+    image: arm64v8/elasticsearch:8.14.2
+    restart: always
+    env_file: ../.env
+    volumes:
+      - es_data:/usr/share/elasticsearch/data/
+
   tg_bot:
     build:
       context: ../telegram_bot/
@@ -40,6 +48,7 @@ services:
     depends_on:
       - db
       - redis
+      - es
   
   backend_pages:
     build:
@@ -51,6 +60,7 @@ services:
     depends_on:
       - db
       - redis
+      - es
   
   celery:
     build:
