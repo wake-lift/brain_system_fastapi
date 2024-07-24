@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 from sqlalchemy import ForeignKey, SmallInteger, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -17,7 +17,7 @@ class BoughtInProduct(Base):
     unit: Mapped[Optional['Unit']] = relationship(
         back_populates='bought_in_products'
     )
-    links_for_product: Mapped[List['ProductLink']] = relationship(
+    links_for_product: Mapped[list['ProductLink']] = relationship(
         back_populates='bought_in_product'
     )
 
@@ -30,7 +30,7 @@ class Unit(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(128))
 
-    bought_in_products: Mapped[List['BoughtInProduct'] | None] = relationship(
+    bought_in_products: Mapped[list['BoughtInProduct'] | None] = relationship(
         back_populates='unit'
     )
 
