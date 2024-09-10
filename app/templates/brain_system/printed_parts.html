@@ -25,8 +25,11 @@
     Поскольку модели крупногабаритные, пластик успевает охлаждаться и без сильного обдува.
   </p>
   <p>
-    Поддержки не требуются. Чтобы избавиться от поддержек, в нескольких моделях отверстия под винты перекрыты мембранами, которые печатаются мостами.<br>
+    Поддержки для большинства деталей не требуются. Чтобы избавиться от поддержек, в нескольких моделях отверстия под винты перекрыты мембранами, которые печатаются мостами.<br>
     После окончания печати мембраны высверливаются сверлом 3 мм.
+  <p>
+    Единственная деталь, при печати которой нужны поддержки - ножка опоры блока светодиодов.
+  </p>
   </p>
   <br>
   <h4 class="adaptive-fs-big" style="text-align: center;">Базовая станция</h4>
@@ -219,6 +222,8 @@
               <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
               <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="1" aria-label="Slide 2"></button>
               <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="3" aria-label="Slide 4"></button>
+              <button type="button" data-bs-target="#carouselLED_block_Orientation" data-bs-slide-to="4" aria-label="Slide 5"></button>
             </div>
             <div class="carousel-inner">
               <div class="carousel-item active">
@@ -234,9 +239,21 @@
                 </div>
               </div>
               <div class="carousel-item">
-                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support_leg_print_orientation.png') }}" class="d-block w-100" alt="...">
                 <div class="carousel-caption d-none d-md-block">
-                  <h5>Блок светодиодов - опора</h5>
+                  <h5>Блок светодиодов - ножка</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support_connector_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - соединитель</h5>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <img src="{{ url_for('static', path='img/manual_printed_parts/LED_case_support_extender_print_orientation.png') }}" class="d-block w-100" alt="...">
+                <div class="carousel-caption d-none d-md-block">
+                  <h5>Блок светодиодов - удлинитель</h5>
                 </div>
               </div>
             </div>
@@ -259,7 +276,9 @@
     Скачать:<br>
     <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_front.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Передняя часть в формате stl</a></li>
     <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_back.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Задняя часть в формате stl</a></li>
-    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Опора в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support_leg.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Ножка опоры в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support_connector.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Соединитель опоры в формате stl</a></li>
+    <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support_extender.stl') }}" download class="link-secondary adaptive-fs-small" target="_blank">Удлинитель опоры в формате stl</a></li>
     <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED case.FCStd') }}" download class="link-secondary adaptive-fs-small" target="_blank">Чертеж блока светодиодов в формате FreeCAD</a></li>
     <li><a href="{{ url_for('static', path='files/manual_printed_parts/LED_case_support.FCStd') }}" download class="link-secondary adaptive-fs-small" target="_blank">Чертеж опоры в формате FreeCAD</a></li>
   </p>
