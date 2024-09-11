@@ -6,6 +6,6 @@ COPY . .
 
 RUN pip install -r requirements_bot.txt --no-cache-dir
 
-RUN chmod +x brain_bot.py
+RUN chmod +x main.py
 
-CMD python3 ./brain_bot.py;
+CMD ["python3", "./main.py"]
