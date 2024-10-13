@@ -12,7 +12,8 @@ async def test_random_package(
 ) -> None:
     """Тестирование логики генерации случайного пакета вопросов."""
     url = '/questions/random-package'
-    response = await non_authenticated_api_client.post(url, json={})
+    # response = await non_authenticated_api_client.post(url, json={}) # celery
+    response = await non_authenticated_api_client.get(url)
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
     assert response.status_code == 200, msg
     msg = (f'Запрос на генерацию случайного пакета ("{url}") возвращает'
@@ -30,20 +31,28 @@ async def test_random_questions(
 ) -> None:
     """Тестирование логики генерации случайного набора вопросов."""
     url = '/questions/random-questions'
-    response = await non_authenticated_api_client.post(
+    # response = await non_authenticated_api_client.post(      # celery
+    #     url,
+    #     params={'quantity': 15},
+    #     json={}
+    # )
+    response = await non_authenticated_api_client.get(
         url,
         params={'quantity': 15},
-        json={}
     )
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
     assert response.status_code == 200, msg
     msg = (f'Обращение к эндпойнту "{url}" возвращает количество вопросов, '
            'отличающееся от значения, переданного в параметрах запроса.')
     assert len(response.json()) == 15, msg
-    response = await non_authenticated_api_client.post(
+    # response = await non_authenticated_api_client.post( # celery
+    #     url,
+    #     params={'question_type': 'Что-где-когда'},
+    #     json={}
+    # )
+    response = await non_authenticated_api_client.get(
         url,
         params={'question_type': 'Что-где-когда'},
-        json={}
     )
     msg = (f'Обращение к эндпойнту "{url}" возвращает тип вопроса, '
            'отличающееся от типа, переданного в параметрах запроса.')
@@ -56,10 +65,14 @@ async def test_questions_search(
 ) -> None:
     """Тестирование поиска по текста вопроса."""
     url = '/questions/search'
-    response = await non_authenticated_api_client.post(
+    # response = await non_authenticated_api_client.post( # celery
+    #     url,
+    #     params={'search_pattern': 'вопроса_11', 'quantity': 5},
+    #     json={}
+    # )
+    response = await non_authenticated_api_client.get(
         url,
         params={'search_pattern': 'вопроса_11', 'quantity': 5},
-        json={}
     )
     msg = f'Обращение к эндпойнту "{url}" возвращает статус, отличный от 200.'
     assert response.status_code == 200, msg

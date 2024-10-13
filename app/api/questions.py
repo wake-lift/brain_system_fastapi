@@ -31,7 +31,7 @@ router = APIRouter(
 )
 
 
-@router.post(
+@router.get(
     '/random-package',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -40,21 +40,22 @@ router = APIRouter(
 @limiter.limit(const.GENERATE_QUESTIONS_THROTTLING_RATE)
 async def get_random_package_set(
     request: Request,
-    email_addresses: EmailForSendingPackage,
+    # email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
     Получить случайный турнирный пакет вопросов.
-    Если необходимо отправить пакет по почте - укажите адрес в теле запроса."""
+    """
+    # Если необходимо отправить пакет по почте - укажите адрес в теле запроса."""
     package = await get_random_package(session)
-    if email_addresses.email:
-        questions_list, package_name = get_package_questions_list(package)
-        for addr in email_addresses.email:
-            send_email.delay(addr, questions_list, package_name)
+    # if email_addresses.email:
+    #     questions_list, package_name = get_package_questions_list(package)
+    #     for addr in email_addresses.email:
+    #         send_email.delay(addr, questions_list, package_name)
     return package
 
 
-@router.post(
+@router.get(
     '/random-questions',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -75,14 +76,15 @@ async def get_random_questions_set(
         description=('Тип вопросов. Если оставить поле пустым - '
                      'будут выбраны вопросы случайных категорий.')
     ),
-    email_addresses: EmailForSendingPackage,
+    # email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
     Получить случайный набор вопросов.
     Можно указать количество вопросов в выдаче, а также тип вопросов.
-    Если необходимо отправить пакет по почте - укажите адрес в теле запроса.
     """
+    # Если необходимо отправить пакет по почте - укажите адрес в теле запроса.
+    # """
     if question_type:
         question_type = question_type.name
     query = await get_initial_query(session, question_type)
@@ -90,14 +92,14 @@ async def get_random_questions_set(
     questions = questions.scalars().all()
     choices_quantity = min(quantity, len(questions))
     questions = choices(questions, k=choices_quantity)
-    if email_addresses.email:
-        questions_list, _ = get_package_questions_list(questions)
-        for addr in email_addresses.email:
-            send_email.delay(addr, questions_list)
+    # if email_addresses.email:
+    #     questions_list, _ = get_package_questions_list(questions)
+    #     for addr in email_addresses.email:
+    #         send_email.delay(addr, questions_list)
     return questions
 
 
-@router.post(
+@router.get(
     '/search',
     response_model=list[QuestionDB],
     response_model_exclude_none=True,
@@ -116,14 +118,15 @@ async def search_questions(
         ge=1,
         le=const.MAX_QUESTIONS_QUANTITY,
         description='Количество вопросов в выдаче.'),
-    email_addresses: EmailForSendingPackage,
+    # email_addresses: EmailForSendingPackage,
     session: AsyncSession = Depends(get_async_session)
 ):
     """
     Поиск по тексту вопроса. Регистр не имеет значения.
     Можно указать количество вопросов в выдаче.
-    Если необходимо отправить выборку по почте - укажите адрес в теле запроса.
     """
+    # Если необходимо отправить выборку по почте - укажите адрес в теле запроса.
+    # """
     questions = await session.execute(
         select(Question)
         .filter(
@@ -134,10 +137,10 @@ async def search_questions(
         .limit(quantity)
     )
     questions = questions.scalars().all()
-    if email_addresses.email:
-        questions_list, _ = get_package_questions_list(questions)
-        for addr in email_addresses.email:
-            send_email.delay(addr, questions_list)
+    # if email_addresses.email:
+    #     questions_list, _ = get_package_questions_list(questions)
+    #     for addr in email_addresses.email:
+    #         send_email.delay(addr, questions_list)
     return questions
 
 
