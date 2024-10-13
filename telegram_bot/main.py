@@ -82,7 +82,7 @@ async def generate_question(callback: CallbackQuery):
             answer_text = generate_answer(parsed_question)
             keyboard = get_inline_keyboard([
                 [InlineKeyboardButton(
-                    text='🙈 Узнать ответ', callback_data='get_answer'
+                    text='👀 Узнать ответ', callback_data='get_answer'
                 )],
                 [InlineKeyboardButton(
                     text='🚀 На главную', callback_data='goto_main'
